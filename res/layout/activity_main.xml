@@ -1,0 +1,67 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="left"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".MainActivity" >
+
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:orientation="vertical" >
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="16dp"
+        android:text="Submit" />
+
+    <RadioGroup
+        android:id="@+id/radioSex"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/button1"
+        android:layout_toRightOf="@+id/linearLayout1" >
+
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="20dp"
+        android:text="Question" />
+
+     <ScrollView
+         android:id="@+id/scrollView1"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_alignLeft="@+id/linearLayout1"
+         android:layout_below="@+id/linearLayout1"
+         android:layout_above="@+id/radioSex"
+         android:fillViewport="true"
+         android:scrollbarStyle="outsideOverlay"
+         android:scrollbars="horizontal|vertical">
+
+         <TextView
+             android:id="@+id/txtQuestion"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:text="TextView" />
+
+     </ScrollView>
+
+</RelativeLayout>

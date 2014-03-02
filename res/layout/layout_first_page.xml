@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.GridLayout xmlns:app="http://schemas.android.com/apk/res/com.san.guru"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+     android:background="@color/White"
+     android:textColor="@color/Black"
+    app:columnCount="3" >
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_column="0"
+        app:layout_gravity="center"
+        app:layout_row="0"
+        android:src="@drawable/chikpick" />
+
+</android.support.v7.widget.GridLayout>
