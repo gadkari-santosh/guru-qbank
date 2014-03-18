@@ -4,7 +4,7 @@
     android:versionCode="1"
     android:versionName="1.0" >
     <uses-sdk
-        android:minSdkVersion="8"
+        android:minSdkVersion="11"
         android:targetSdkVersion="18" />
 
     <application
@@ -12,7 +12,7 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppBaseTheme" >
-        <activity android:name="com.san.guru.activities.FrontPageActivity"
+        <activity android:name="com.san.guru.activities.SplashScreenActivity"
             	  android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen"
             	  android:label="@string/app_name" >
             <intent-filter>
@@ -20,11 +20,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.san.guru.activities.SkillSetActivity"
+        <activity android:name="com.san.guru.activities.ChooseSubjectActivity"
             	  android:label="@string/app_name" >
             
         </activity>
-        <activity android:name="com.san.guru.activities.MainActivity"
+        <activity android:name="com.san.guru.activities.QuestionActivity"
             	  android:label="@string/app_name" >
             
         </activity>

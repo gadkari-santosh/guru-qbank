@@ -16,26 +16,6 @@
         android:background="@color/MidnightBlue"
         app:columnCount="1" >
 
-        <TextView
-            android:id="@+id/textView1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_column="0"
-            app:layout_gravity="left|center_vertical"
-            app:layout_row="0"
-            android:text="Question 1/50"
-            android:textColor="@color/WhiteSmoke" />
-
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_column="0"
-            app:layout_gravity="right|center_vertical"
-            app:layout_row="0"
-            android:text="Time 00:00:00"
-            android:textColor="@color/WhiteSmoke" />
-
         <android.support.v7.widget.GridLayout
             android:layout_width="match_parent"
             android:layout_height="42dp"
@@ -46,20 +26,22 @@
             app:columnCount="1" >
 
             <TextView
-                android:id="@+id/textView1"
+                android:id="@+id/txtQCount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_column="0"
+                android:layout_margin="10dp"
                 app:layout_gravity="left|center_vertical"
                 app:layout_row="0"
                 android:text="Question 1/50"
                 android:textColor="@color/WhiteSmoke"/>
 
             <TextView
-                android:id="@+id/textView2"
+                android:id="@+id/txtTimer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_column="0"
+                android:layout_margin="10dp"
                 app:layout_gravity="right|center_vertical"
                 app:layout_row="0"
                 android:text="Time 00:00:00"
@@ -114,49 +96,74 @@
 
     <android.support.v7.widget.GridLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="55dp"
         app:layout_column="0"
         app:layout_gravity="left|bottom"
         app:layout_row="2"
-        android:background="@color/SteelBlue"
+        android:background="@color/Black"
         app:columnCount="1" >
 
+         <LinearLayout
+             style="?android:attr/buttonBarButtonStyle"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             app:layout_gravity="fill_horizontal"
+             android:background="@color/Black"
+             android:orientation="horizontal" >
+        
+       <Button
+           android:id="@+id/PrevQuestion"
+           android:layout_width="0dp"
+           android:layout_height="match_parent"
+           android:layout_weight="1"
+           app:layout_gravity="center|top"
+           android:background="@color/Black"
+           android:drawableTop="@drawable/button_prev_question"
+           android:text="BACK"
+           android:textColor="@color/button_color"
+           android:textSize="10sp"
+           android:textStyle="bold" />
+        
         <Button
-            android:id="@+id/button1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_column="0"
-            app:layout_gravity="right|top"
-            android:layout_margin="5dp"
-            app:layout_row="0"
-            android:background="@drawable/button"
-            android:ellipsize="none"
-            android:text=" Next "
-            android:textColor="@color/SteelBlue" />
-         <Button
-            android:id="@+id/button1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_column="0"
+            android:id="@+id/PauseTest"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
             app:layout_gravity="center|top"
-            android:layout_margin="5dp"
-            app:layout_row="0"
-             android:background="@drawable/button"
-            android:ellipsize="none"
-            android:text=" Pause "
-            android:textColor="@color/SteelBlue" />
-          <Button
-            android:id="@+id/button1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_column="0"
-            app:layout_gravity="left|top"
-            android:layout_margin="5dp"
-            app:layout_row="0"
-            android:background="@drawable/button"
-            android:ellipsize="none"
-            android:text=" Previous "
-            android:textColor="@color/SteelBlue" />
+            android:background="@color/Black"
+            android:drawableTop="@drawable/button_pause_test"
+            android:text="PAUSE"
+            android:textColor="@color/button_color"
+            android:textSize="10sp"
+            android:textStyle="bold" />
+        
+        <Button
+            android:id="@+id/EndTest"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            app:layout_gravity="center|top"
+            android:background="@color/Black"
+            android:drawableTop="@drawable/button_end_test"
+            android:text="END"
+            android:textColor="@color/button_color"
+            android:textSize="10sp"
+            android:textStyle="bold" />
+	        
+        <Button
+            android:id="@+id/NextQuestion"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            app:layout_gravity="center|top"
+            android:background="@color/Black"
+            android:drawableTop="@drawable/button_next_question"
+            android:text="NEXT"
+            android:textColor="@color/button_color"
+            android:textSize="10sp"
+            android:textStyle="bold" />
+       
+        </LinearLayout>
 
     </android.support.v7.widget.GridLayout>
 

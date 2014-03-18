@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.GridLayout xmlns:app="http://schemas.android.com/apk/res/com.san.guru"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+     android:background="@color/WhiteSmoke"
+     android:textColor="@color/Black"
+    app:columnCount="3" >
+
+    <android.support.v7.widget.GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        app:layout_column="0"
+        app:layout_gravity="left|top"
+        app:layout_row="0"
+        android:background="@color/SteelBlue"
+        app:columnCount="1" />
+    
+     <android.support.v7.widget.GridLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_column="0"
+        app:layout_gravity="center"
+        android:color="@color/Black"
+        app:layout_row="1"
+        app:columnCount="2" />
+    
+    <android.support.v7.widget.GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        app:layout_column="0"
+        app:layout_gravity="left|bottom"
+        android:background="@color/SteelBlue">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            style="?android:attr/buttonBarButtonStyle"
+            android:background="@color/SteelBlue"
+            android:layout_height="match_parent"
+            app:layout_gravity="fill_horizontal"
+            android:orientation="horizontal" >
+        
+       <Button
+            android:id="@+id/ButtonTest"
+ 			android:layout_width="0dp"
+             android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:background="@color/SteelBlue"
+            android:drawableTop="@drawable/button_prev_question"
+            android:text="Prev"
+            app:layout_column="0"
+            app:layout_gravity="center|top"
+            android:layout_margin="5dp"
+            app:layout_row="0"
+            android:textColor="@color/button_color" />
+        
+        <Button
+            android:id="@+id/ButtonTest"
+ 			android:layout_width="0dp"
+             android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:background="@color/SteelBlue"
+            android:drawableTop="@drawable/button_pause_test"
+            android:text="Pause"
+            app:layout_column="0"
+            app:layout_gravity="center|top"
+            android:layout_margin="5dp"
+            app:layout_row="0"
+            android:textColor="@color/button_color" />
+        
+        <Button
+            android:id="@+id/ButtonTest"
+             android:layout_width="0dp"
+             android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:background="@color/SteelBlue"
+            android:drawableTop="@drawable/button_end_test"
+            android:text="End"
+            app:layout_column="0"
+            app:layout_gravity="center|top"
+            android:layout_margin="5dp"
+            app:layout_row="0"
+            android:textColor="@color/button_color" />
+	        
+        <Button
+            android:id="@+id/ButtonTest"
+             android:layout_width="0dp"
+             android:layout_weight="1"
+            android:layout_height="wrap_content"
+           android:background="@color/SteelBlue"
+            android:drawableTop="@drawable/button_next_question"
+            app:layout_column="0"
+            android:layout_gravity="bottom|center"
+            app:layout_row="0"
+            android:text="Next"
+            android:textColor="@color/button_color" />
+       
+        </LinearLayout>
+    </android.support.v7.widget.GridLayout>
+
+</android.support.v7.widget.GridLayout>

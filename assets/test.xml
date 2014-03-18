@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Tests>
+
+    <Test id="1">
+       <Description>
+           What is the output of below program
+           
+           class Test {
+           		public static void main (String[] a) {
+           			int a = 0;
+           			int c = a++;
+           			
+           			System.out.println("c:" + c);
+           			System.out.println("a:" + a);
+           		}
+           }
+           
+           What are the value of a and c ?
+       </Description>
+       <Options>
+          <Option id="1">1 1</Option>
+           <Option id="2">1 0</Option>
+           <Option id="3">0 1</Option>
+           <Option id="4">0 0</Option>
+       </Options>
+           
+       <Explaination>
+           
+       </Explaination>
+       <TopicName></TopicName>
+       <Answer>4</Answer>
+   </Test>
+    
+    
+   <Test id="2">
+       <Description>
+           Who is the prime minister of india
+       </Description>
+       <Options>
+           <Option id="1">Arvind Kejriwal</Option>
+           <Option id="2">Narendra Modi</Option>
+           <Option id="3">Manmohan Singh</Option>
+           <Option id="4">Lalu Prasad Yadav</Option>
+       </Options>
+       <Explaination>
+           
+       </Explaination>
+       <TopicName></TopicName>
+       <Answer>3</Answer>
+   </Test>
+   
+    <Test id="3">
+       <Description>
+           Who is the President of Aam Admi Party.
+       </Description>
+       <Options>
+           <Option id="1">Arvind Kejriwal</Option>
+           <Option id="2">Narendra Modi</Option>
+           <Option id="3">Manmohan Singh</Option>
+           <Option id="4">Lalu Prasad Yadav</Option>
+       </Options>
+           
+       <Explaination>
+           
+       </Explaination>
+       <TopicName></TopicName>
+       <Answer>1</Answer>
+   </Test>
+   
+     <Test id="4">
+       <Description>
+           Who is the prime minister candidate of BJP for Loksabha election 2014
+       </Description>
+       <Options>
+           <Option id="1">Arvind Kejriwal</Option>
+           <Option id="2">Narendra Modi</Option>
+           <Option id="3">Manmohan Singh</Option>
+           <Option id="4">Lalu Prasad Yadav</Option>
+       </Options>
+           
+       <Explaination>
+           
+       </Explaination>
+       <TopicName></TopicName>
+       <Answer>2</Answer>
+   </Test>
+   
+     <Test id="5">
+       <Description>
+           What all gets printed when the following program is compiled and run. Select the two correct answers. 
+
+
+				public class test {
+				   public static void main(String args[]) { 
+				      int i, j=1;
+				      i = (j>1)?2:1;
+				      switch(i) {
+				        case 0: System.out.println(0); break;
+				        case 1: System.out.println(1);
+				        case 2: System.out.println(2); break;
+				        case 3: System.out.println(3); break;
+				      }
+				   }
+				}
+
+       </Description>
+       <Options>
+          <Option id="1">0</Option>
+          <Option id="2">1</Option>
+           <Option id="3">2</Option>
+          <Option id="4">3</Option>
+       </Options>
+           
+       <Explaination>
+           
+       </Explaination>
+       <TopicName></TopicName>
+       <Answer>4</Answer>
+   </Test>
+   
+</Tests>

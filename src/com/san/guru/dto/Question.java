@@ -53,7 +53,7 @@ public class Question {
 	
 	public boolean isCorrect() {
 		for (Option option : getOptions()) {
-			if (option.getText().endsWith(userAnswer)
+			if (option.getText().equalsIgnoreCase(userAnswer)
 				&& option.getId() == answer) {
 				
 				return true;

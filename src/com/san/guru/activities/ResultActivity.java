@@ -1,8 +1,10 @@
 package com.san.guru.activities;
 
-import java.text.NumberFormat;
+import static com.san.guru.constant.AppContents.INTENT_DATA;
+import static com.san.guru.constant.AppContents.INTENT_RESULT;
+
 import java.util.ArrayList;
-import java.util.Random;
+import java.util.List;
 
 import org.achartengine.ChartFactory;
 import org.achartengine.GraphicalView;
@@ -13,136 +15,273 @@ import org.achartengine.renderer.SimpleSeriesRenderer;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
 import org.achartengine.renderer.XYMultipleSeriesRenderer.Orientation;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Paint.Align;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.DisplayMetrics;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.san.guru.R;
+import com.san.guru.dto.IntentData;
+import com.san.guru.dto.SubjectResult;
+import com.san.guru.dto.TestResult;
+import com.san.guru.util.DateTimeUtils;
+import com.san.guru.util.Dialog;
+import com.san.guru.util.ICallback;
 
-public class ResultActivity extends Activity{
+public class ResultActivity extends Activity {
 
-		private XYMultipleSeriesDataset getTruitonBarDataset() {
-			XYMultipleSeriesDataset dataset = new XYMultipleSeriesDataset();
-			final int nr = 14;
-			Random r = new Random(100);
-			ArrayList<String> legendTitles = new ArrayList<String>();
-			legendTitles.add("Subjects");
-			for (int i = 0; i < 1; i++) {
-				CategorySeries series = new CategorySeries(legendTitles.get(i));
-				for (int k = 0; k < nr; k++) {
-					series.add(r.nextInt(100) % 100);
-				}
-				dataset.addSeries(series.toXYSeries());
-			}
-			return dataset;
-		}
+	private static final String STRING_FORMAT_PERCENT = "<b>Result</b><br><br> <font color='#254117'><b>%s</b> <br><small>%s out of %s</small>";
 
-		@SuppressLint("ResourceAsColor")
-		public XYMultipleSeriesRenderer getTruitonBarRenderer() {
-			XYMultipleSeriesRenderer renderer = new XYMultipleSeriesRenderer();
-			renderer.setAxisTitleTextSize(16);
-			renderer.setChartTitleTextSize(20);
-			renderer.setLabelsTextSize(15);
-			renderer.setLegendTextSize(15);
-			renderer.setMargins(new int[] { 30, 40, 15, 0 });
-			SimpleSeriesRenderer r = new SimpleSeriesRenderer();
-			r.setColor(R.color.DeepSkyBlue);
-			renderer.addSeriesRenderer(r);
-			return renderer;
-		}
+	private static final String STRING_FORMAT_PACE = "<b>Pace</b><br><br> <font color='#254117'><b>%s Q/Min</b> <br><small>Time:%s</small>";
 
-		private void myChartSettings(XYMultipleSeriesRenderer renderer) {
-			renderer.setChartTitle("Subject wise result");
-            renderer.setMarginsColor(Color.parseColor("#FBFBFC"));
-            renderer.setXLabelsColor(Color.BLACK);
-            renderer.setYLabelsColor(0,Color.BLACK);
-            renderer.setMargins(new int[] { 20, 20, 130, 20 }); // top, left, bottom or 
-            
-            renderer.setApplyBackgroundColor(true);
-            renderer.setBackgroundColor(Color.parseColor("#FBFBFC"));
-            renderer.setShowLegend(false);
-            
-            renderer.setXLabels(0);
-            renderer.setYLabels(0);
-            
-            renderer.setLabelsColor(Color.BLACK);
-			renderer.setXAxisMin(0);
-			renderer.setXAxisMax(10);
-			renderer.setYAxisMin(0);
-			renderer.setYAxisMax(100);
-			renderer.setOrientation(Orientation.VERTICAL);
-			renderer.addXTextLabel(1, "XML (20/100)");
-			renderer.addXTextLabel(2, "Core Java (1/5)");
-			renderer.addXTextLabel(3, "Spring (20/30)");
-			renderer.addXTextLabel(4, "Hibernate (9/8)");
-			renderer.addXTextLabel(5, "XML (7/67)");
-			renderer.addXTextLabel(6, "Design Pattern (23/45)");
-			renderer.addXTextLabel(7, "Software Engg. (12/23)");
-			renderer.addXTextLabel(8, "Hibernate (33/66)");
-			renderer.addXTextLabel(9, "XML (20/100)");
-			renderer.addXTextLabel(10, "Core Java (1/5)");
-			renderer.addXTextLabel(11, "Spring (20/30)");
-			renderer.addXTextLabel(12, "Hibernate (9/8)");
-			renderer.addXTextLabel(13, "XML (7/67)");
-			renderer.addXTextLabel(14, "Design Pattern (23/45)");
-			renderer.setYLabelsAngle(90f);
-			renderer.setBarSpacing(0.5);
-			
-			NumberFormat format = NumberFormat.getNumberInstance();
-			format.setMaximumFractionDigits(3);
-			renderer.setLabelFormat(format);
-
-			renderer.getSeriesRendererAt(0).setDisplayChartValuesDistance(20);
-			renderer.getSeriesRendererAt(0).setChartValuesFormat(format);
-			renderer.getSeriesRendererAt(0).setDisplayChartValues(true);
-			renderer.getSeriesRendererAt(0).setChartValuesSpacing(20);
-			renderer.getSeriesRendererAt(0).setChartValuesTextSize(20);
-		    renderer.setLabelsTextSize(20);
-		}
-
+	private TestResult result = null;
 	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+	    // Handle presses on the action bar items
+	    switch (item.getItemId()) {
+	        case R.id.action_home:
+	        	Dialog.show(this, "Are you sure ?", "Home", new ICallback() {
+					
+					@Override
+					public void call() {
+						Intent intent = new Intent(ResultActivity.this, ChooseSubjectActivity.class);
+						ResultActivity.this.startActivity(intent);
+						
+						finish();
+					}
+				}, false);
+	            return true;
+	        default:
+	            return super.onOptionsItemSelected(item);
+	    }
+	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.main, menu);
+		return super.onCreateOptionsMenu(menu);
+	}
+	
+	protected XYMultipleSeriesDataset buildBarDataset(String[] titles,
+			List<double[]> values) {
+		XYMultipleSeriesDataset dataset = new XYMultipleSeriesDataset();
+		int length = titles.length;
+		for (int i = 0; i < length; i++) {
+			CategorySeries series = new CategorySeries(titles[i]);
+			double[] v = values.get(i);
+			int seriesLength = v.length;
+			for (int k = 0; k < seriesLength; k++) {
+				series.add(v[k]);
+			}
+			dataset.addSeries(series.toXYSeries());
+		}
+		return dataset;
+	}
+
+	protected XYMultipleSeriesRenderer buildBarRenderer(int[] colors) {
+		XYMultipleSeriesRenderer renderer = new XYMultipleSeriesRenderer();
+		renderer.setChartTitleTextSize(20);
+		renderer.setLabelsTextSize(20);
+		renderer.setPanEnabled(true, true);
+		renderer.setZoomEnabled(false, false);
+		int length = colors.length;
+		for (int i = 0; i < length; i++) {
+			SimpleSeriesRenderer r = new SimpleSeriesRenderer();
+			r.setColor(colors[i]);
+			renderer.addSeriesRenderer(r);
+		}
+
+		renderer.setXLabels(0);
+		renderer.setYLabels(0);
+		
+		List<SubjectResult> subjectsResult = result.getSubjectResult();
+		for (int i = 0; i < subjectsResult.size(); i++) {
+			SubjectResult result = subjectsResult.get(i);
+			
+			renderer.addXTextLabel(i+1, String.format("%s (%s / %s)", 
+										result.getName(), 
+										result.getTotalCorrect(),
+										result.getTotalQuestions()));
+		}
+
+		return renderer;
+	}
+
+	protected void setChartSettings(XYMultipleSeriesRenderer renderer,
+			String title, String xTitle, String yTitle, double xMin,
+			double xMax, double yMin, double yMax, int axesColor,
+			int labelsColor) {
+		renderer.setChartTitle(title);
+		renderer.setXTitle(xTitle);
+		renderer.setYTitle(yTitle);
+		renderer.setXAxisMin(xMin);
+		renderer.setXAxisMax(xMax);
+		renderer.setYAxisMin(yMin);
+		renderer.setYAxisMax(yMax);
+		renderer.setLabelsColor(labelsColor);
+		renderer.setZoomEnabled(false);
+		renderer.setExternalZoomEnabled(true);
+		renderer.setPanEnabled(false, false);
+		renderer.setZoomEnabled(false, false);
+		renderer.setShowLegend(false);
+		renderer.setShowGrid(false);
+		renderer.setShowAxes(false);
+
+		renderer.setMarginsColor(Color.parseColor("#FBFBFC"));
+		renderer.setXLabelsColor(Color.BLACK);
+		renderer.setYLabelsColor(0, Color.WHITE);
+		renderer.setMargins(new int[] {30, 70, 10, 0});
+
+
+		renderer.setOrientation(Orientation.VERTICAL);
+
+		renderer.setYLabelsAngle(90f);
+		renderer.setBarSpacing(0.5);
+
+		renderer.setLabelsColor(Color.BLACK);
+	}
+
 	@Override
 	protected void onCreate(Bundle bundle) {
 		super.onCreate(bundle);
 
+		IntentData intentData = null;
+
+		String totalTime = null;
+
 		setContentView(R.layout.layout_result);
-		
+
+		Intent intent = getIntent();
+		if (intent != null && intent.getExtras() != null) {
+			intentData = (IntentData) intent.getExtras().get(INTENT_DATA);
+
+			if (intentData != null) {
+				result = (TestResult) intentData.getValue(INTENT_RESULT);
+				totalTime = DateTimeUtils.getTimeString(result
+						.getTotalTimeinSeconds());
+			}
+		}
+
 		DisplayMetrics dimension = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(dimension);
-        int height = dimension.heightPixels;
-        int width = dimension.widthPixels;
-        
-        TextView view = (TextView) findViewById(R.id.txtVwScore);
-        TextView view1 = (TextView) findViewById(R.id.txtVwPace);
-		
+		getWindowManager().getDefaultDisplay().getMetrics(dimension);
+		int height = dimension.heightPixels;
+		int width = dimension.widthPixels;
+
+		TextView view = (TextView) findViewById(R.id.txtVwScore);
+		TextView view1 = (TextView) findViewById(R.id.txtVwPace);
+
 		LayoutParams layoutParams = view.getLayoutParams();
 		LayoutParams layoutParams1 = view1.getLayoutParams();
-		
-		layoutParams.height = height - (int)(height * 0.85);
-		layoutParams.width = width - (int)(width * 0.60);
-		
-		layoutParams1.height = height - (int)(height * 0.85);
-		layoutParams1.width = width - (int)(width * 0.60);
-		
-		view.setText(Html.fromHtml("<b>Result</b><br><br> <font color='#254117'><b>98%</b> <br><small>58 out of 62</small>"));
-		view1.setText(Html.fromHtml("<b>Pace</b><br><br> <font color='red'><b>5</b> <br><small> Ques. per min.</small>"));
 
-		XYMultipleSeriesRenderer renderer = getTruitonBarRenderer();
-		renderer.setXAxisMax((int)(height - (int)height * 0.5));
-		renderer.setShowAxes(false);
-		myChartSettings(renderer);
-		
+		layoutParams.height = height - (int) (height * 0.85);
+		layoutParams.width = width - (int) (width * 0.60);
+
+		layoutParams1.height = height - (int) (height * 0.85);
+		layoutParams1.width = width - (int) (width * 0.60);
+
+		view.setText(Html.fromHtml(String.format(STRING_FORMAT_PERCENT,
+				result.getPercent(), result.getTotalCorrect(),
+				result.getTotalQuestions())));
+		view1.setText(Html.fromHtml(String.format(STRING_FORMAT_PACE,
+				result.getPace(), totalTime)));
+
+		// XYMultipleSeriesRenderer renderer = getTruitonBarRenderer();
+		// renderer.setXAxisMax((int)(height - (int)height * 0.5));
+		// renderer.setShowAxes(false);
+		// myChartSettings(renderer);
+
 		LinearLayout layout = (LinearLayout) findViewById(R.id.chart);
+
+		String[] titles = new String[] { "CORRECT", "WRONG" };
+		List<double[]> values = new ArrayList<double[]>();
+		//values.add(new double[] { 100, 100, 100, 100, 100, 100, 100, 100, 100,	100, 100, 100 });
+		//values.add(new double[] { 50, 30, 60, 100, 90, 10, 0, 65, 75.7, 90, 16,	14 });
 		
-		GraphicalView barChartView = ChartFactory.getBarChartView(this, getTruitonBarDataset(), renderer,Type.STACKED);
-		layout.addView(barChartView, new LayoutParams( width, (int)(height - (int)height * 0.5) ));
-                
+		List<SubjectResult> subjectResult = result.getSubjectResult();
+		double[] X = new double[subjectResult.size()];
+		double[] Y = new double[subjectResult.size()];
+		
+		for (int i =0 ; i<subjectResult.size();i++) {
+			Y[i] = subjectResult.get(i).getPercent();
+		}
+		for (int i =0 ; i<subjectResult.size();i++) {
+			X[i] = 100;
+		}
+		
+		values.add(X); values.add(Y);
+		
+		int[] colors = new int[] { Color.parseColor("#FE0000"),	Color.parseColor("#6E8B3D") };
+		XYMultipleSeriesRenderer renderer = buildBarRenderer(colors);
+		setChartSettings(renderer, "Subject wise result", "", "", 0.5, 12.5, 0,	100, Color.GRAY, Color.LTGRAY);
+		renderer.getSeriesRendererAt(0).setDisplayChartValues(true);
+		renderer.getSeriesRendererAt(1).setDisplayChartValues(true);
+		// renderer.setXLabels(12);
+		// renderer.setYLabels(10);
+		renderer.setXLabelsAlign(Align.RIGHT);
+		renderer.setYLabelsAlign(Align.RIGHT);
+		renderer.setPanEnabled(true, false);
+		renderer.setZoomEnabled(false, false);
+		renderer.setZoomRate(1f);
+		renderer.setBarSpacing(0.5f);
+
+		GraphicalView barChartView = ChartFactory.getBarChartView(this,
+				buildBarDataset(titles, values), renderer, Type.STACKED);
+		layout.addView(barChartView, new LayoutParams(width,
+				(int) (height - (int) height * 0.5)));
+
+		Button quitTestButton = (Button) findViewById(R.id.butQuitTest);
+		quitTestButton.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+
+				AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+						v.getContext());
+
+				// set title
+				alertDialogBuilder.setTitle("Exit");
+
+				// set dialog message
+				alertDialogBuilder
+						.setMessage("Do you really want to exit?")
+						.setCancelable(false)
+						.setNegativeButton("No",
+								new DialogInterface.OnClickListener() {
+									public void onClick(DialogInterface dialog,
+											int id) {
+										// Do nothing.
+									}
+								})
+						.setPositiveButton("Yes",
+								new DialogInterface.OnClickListener() {
+									public void onClick(DialogInterface dialog,
+											int id) {
+										// if this button is clicked, close
+										// current activity
+										finish();
+									}
+								});
+				AlertDialog alertDialog = alertDialogBuilder.create();
+				alertDialog.show();
+			}
+		});
 	}
-	
+
 }

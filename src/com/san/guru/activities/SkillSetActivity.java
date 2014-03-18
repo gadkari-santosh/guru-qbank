@@ -27,8 +27,9 @@ import android.widget.CheckedTextView;
 import android.widget.ListView;
 
 import com.san.guru.R;
-import com.san.guru.Utility;
 import com.san.guru.dto.IntentData;
+import com.san.guru.model.Subjects;
+import com.san.guru.util.UIUtils;
 
 public class SkillSetActivity extends Activity {
 	
@@ -39,11 +40,16 @@ public class SkillSetActivity extends Activity {
 		
 		final ArrayList checkedItems = new ArrayList();
 		
-		String[] GENRES = new String[] {
-			        "Core Java", "Servlet", "JSP", "XML", "Hibernate", "Spring", "SQL",
-			        "EJB 3.0", "Design Patterns", "Junit", "Java Script", "Application Servers", "JavaFX", "SoftwareEngg."
-			    	};
-		   
+		Subjects subjects = Subjects.getInstance();
+		subjects.init(this);
+		
+		String[] GENRES = subjects.getSubjects();
+		
+//		String[] GENRES = new String[] {
+//			        "Core Java", "Servlet", "JSP", "XML", "Hibernate", "Spring", "SQL",
+//			        "EJB 3.0", "Design Patterns", "Junit", "Java Script", "Application Servers", "JavaFX", "SoftwareEngg."
+//			    	};
+//		   
 		setContentView(R.layout.layout_choose_subject);
 		   
 		DisplayMetrics dimension = new DisplayMetrics();
@@ -108,7 +114,7 @@ public class SkillSetActivity extends Activity {
 				
 		LayoutParams layoutParams = gView.getLayoutParams();
 		int h = layoutParams.height;
-		int k = Utility.dpToPx(372, this);
+		int k = UIUtils.dpToPx(372, this);
 		layoutParams.height = height - (gView3.getLayoutParams().height+gView1.getLayoutParams().height + (int)(height * 0.165));
 		layoutParams.width = android.widget.GridLayout.LayoutParams.MATCH_PARENT;
 	}
