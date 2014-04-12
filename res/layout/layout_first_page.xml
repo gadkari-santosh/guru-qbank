@@ -20,13 +20,12 @@
   Major history : 
   
  -->
-
 <android.support.v7.widget.GridLayout xmlns:app="http://schemas.android.com/apk/res/com.san.guru"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-     android:background="@color/White"
-     android:textColor="@color/Black"
+    android:background="@color/AliceBlue"
+    android:textColor="@color/Black"
     app:columnCount="3" >
 
     <ImageView
@@ -34,8 +33,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_column="0"
-        app:layout_gravity="center"
+        app:layout_gravity="center_horizontal|top"
         app:layout_row="0"
-        android:src="@drawable/chikpick" />
+        android:background="@color/AliceBlue"
+        android:src="@drawable/letstry" />
 
 </android.support.v7.widget.GridLayout>

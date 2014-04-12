@@ -8,6 +8,7 @@
     app:columnCount="3" >
 
     <android.support.v7.widget.GridLayout
+        android:id="@+id/grid_1"
         android:layout_width="match_parent"
         android:layout_height="42dp"
         app:layout_column="0"
@@ -29,13 +30,24 @@
                 android:id="@+id/txtQCount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_column="0"
                 android:layout_margin="10dp"
+                app:layout_column="0"
                 app:layout_gravity="left|center_vertical"
                 app:layout_row="0"
-                android:text="Question 1/50"
-                android:textColor="@color/WhiteSmoke"/>
+                android:text="Question 0/0"
+                android:textColor="@color/WhiteSmoke"
+                android:typeface="normal" />
 
+             <ImageView
+                 android:id="@+id/imageView1"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:layout_marginRight="80dp"
+                 app:layout_column="0"
+                 app:layout_gravity="right|center_vertical"
+                 app:layout_row="0"
+                 android:src="@drawable/ic_action_alarms" />
+             
             <TextView
                 android:id="@+id/txtTimer"
                 android:layout_width="wrap_content"
@@ -44,21 +56,29 @@
                 android:layout_margin="10dp"
                 app:layout_gravity="right|center_vertical"
                 app:layout_row="0"
-                android:text="Time 00:00:00"
+                android:text="00:00:00"
                 android:textColor="@color/WhiteSmoke" />
 
         </android.support.v7.widget.GridLayout>
     </android.support.v7.widget.GridLayout>
 
     <android.support.v7.widget.GridLayout
+        android:id="@+id/grid_2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_column="0"
-        app:layout_gravity="center"
-        android:color="@color/Black"
+        app:layout_gravity="left|top"
+        android:color="@color/DarkBlack"
         app:layout_row="1"
         app:columnCount="2" >
 
+            <ScrollView
+                android:id="@+id/qScrollView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbarStyle="outsideOverlay"
+                android:scrollbars="horizontal|vertical" >
+        
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -67,34 +87,42 @@
             app:layout_row="0"
             android:orientation="vertical" >
 
-            <ScrollView
-                android:id="@+id/qScrollView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:scrollbarStyle="outsideOverlay"
-                android:scrollbars="horizontal|vertical" >
-
                 <TextView
                     android:id="@+id/txtQuestion"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/Black" 
-                    android:text="TextView" />
-            </ScrollView>
+                    android:layout_margin="10dp"
+                    android:textColor="@color/DarkBlack" 
+                    android:text="" />
+        
 
             <RadioGroup
                 android:id="@+id/option"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:button="@android:color/transparent"
-                android:textColor="@color/Black"
+                android:layout_margin="10dp"
+                android:textColor="@color/DarkBlack"
                 android:visibility="visible" >
 
             </RadioGroup>
+            
+                <TextView
+                    android:id="@+id/txtExplain"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="TextView"
+                    android:layout_margin="10dp"
+                    app:layout_gravity="left"
+                    android:textColor="@color/DarkBlack"
+                    android:visibility="invisible" />
+
         </LinearLayout>
+            </ScrollView>
     </android.support.v7.widget.GridLayout>
 
     <android.support.v7.widget.GridLayout
+        android:id="@+id/grid_3"
         android:layout_width="match_parent"
         android:layout_height="55dp"
         app:layout_column="0"
@@ -104,7 +132,6 @@
         app:columnCount="1" >
 
          <LinearLayout
-             style="?android:attr/buttonBarButtonStyle"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
              app:layout_gravity="fill_horizontal"
@@ -123,7 +150,7 @@
            android:textColor="@color/button_color"
            android:textSize="10sp"
            android:textStyle="bold" />
-        
+
         <Button
             android:id="@+id/PauseTest"
             android:layout_width="0dp"
@@ -131,8 +158,8 @@
             android:layout_weight="1"
             app:layout_gravity="center|top"
             android:background="@color/Black"
-            android:drawableTop="@drawable/button_pause_test"
-            android:text="PAUSE"
+            android:drawableTop="@drawable/button_skip_test"
+            android:text="SKIP"
             android:textColor="@color/button_color"
             android:textSize="10sp"
             android:textStyle="bold" />

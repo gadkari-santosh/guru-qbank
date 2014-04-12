@@ -1,0 +1,385 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Tests>
+	<Test id="1">
+		<Question> Which command is used to copy all files having the string chap and any two characters after that to the progs directory?</Question>
+		<Options>
+			<Option id="1">cp chap?? progs</Option>
+			<Option id="2">cp chap* progs</Option>
+			<Option id="3">cp chap[12] /progs/*.*</Option>
+			<Option id="4">cp chap?? /progs/*</Option>
+			<Option id="5">None of the above</Option>
+		</Options>
+		<Explaination>Wrong:Correct answer is option 1.</Explaination>
+		<TopicName/>
+		<Answer>1</Answer>
+	</Test>
+	<Test id="2">
+		<Question> Which command is used to change protection mode of files starting with the string emp and ending with 1,2, or 3?</Question>
+		<Options>
+			<Option id="1">chmod u+x emp[l-3]</Option>
+			<Option id="2">chmod 777 emp*</Option>
+			<Option id="3">chmod u+r ??? emp</Option>
+			<Option id="4">chmod 222 emp?</Option>
+			<Option id="5">None of the above</Option>
+		</Options>
+		<Explaination>Wrong:Correct answer is option 1.</Explaination>
+		<TopicName/>
+		<Answer>1</Answer>
+	</Test>
+	<Test id="3">
+		<Question> Which command is used to sort the lines of data in a file in reverse order</Question>
+		<Options>
+			<Option id="1">sort</Option>
+			<Option id="2">sh</Option>
+			<Option id="3">st</Option>
+			<Option id="4">sort -r</Option>
+			<Option id="5">None of the above</Option>
+		</Options>
+		<Explaination>Wrong:Correct answer is option 4.</Explaination>
+		<TopicName/>
+		<Answer>4</Answer>
+	</Test>
+	<Test id="4">
+		<Question> Which of the following commands is used to display the directory attributes rather than its contents?</Question>
+		<Options>
+			<Option id="1">ls -l -d</Option>
+			<Option id="2">ls -l</Option>
+			<Option id="3">ls -x</Option>
+			<Option id="4">ls -F</Option>
+			<Option id="5">None of the above</Option>
+		</Options>
+		<Explaination>Wrong:Correct answer is option 1.</Explaination>
+		<TopicName/>
+		<Answer>1</Answer>
+	</Test>
+	<Test id="5">
+		<Question> Which of the following directories contain all the Ales created by a user, including his login directory
+ ?</Question>
+		<Options>
+			<Option id="1">/tmp</Option>
+			<Option id="2">/etc</Option>
+			<Option id="3">/usr</Option>
+			<Option id="4">/dev</Option>
+			<Option id="5">None of the above</Option>
+		</Options>
+		<Explaination>Wrong:Correct answer is option 3.</Explaination>
+		<TopicName/>
+		<Answer>3</Answer>
+	</Test>
+	<Test id="6">
+		<Question> The % key allows you</Question>
+		<Options>
+			<Option id="1">to move the cursor to a matching delimiter, when a delimiters a parenthesis, a bracket, or a brace</Option>
+			<Option id="2">to move the cursor to the upperleft corner of the screen</Option>
+			<Option id="3">to move the cursor backward to the beginning of a word</Option>
+			<Option id="4"> to move the cursor to the first column in the current line</Option>
+			<Option id="5">None of the above</Option>
+		</Options>
+		<Explaination>Wrong:Correct answer is option 1.</Explaination>
+		<TopicName/>
+		<Answer>1</Answer>
+	</Test>
+	<Test id="7">
+		<Question> Which command is used to display the characteristics of a process?</Question>
+		<Options>
+			<Option id="1">pid</Option>
+			<Option id="2">du</Option>
+			<Option id="3">ps</Option>
+			<Option id="4">au</Option>
+			<Option id="5">None of the above</Option>
+		</Options>
+		<Explaination>Wrong:Correct answer is option 3.</Explaination>
+		<TopicName/>
+		<Answer>3</Answer>
+	</Test>
+	<Test id="8">
+		<Question> The second set of the three permissions (r-) indicates that - </Question>
+		<Options>
+			<Option id="1">group has read permission only</Option>
+			<Option id="2">other has read permission only</Option>
+			<Option id="3">owner has read permission only</Option>
+			<Option id="4">group has write permission only</Option>
+			<Option id="5">None of the above</Option>
+		</Options>
+		<Explaination>Wrong:Correct answer is option 1.</Explaination>
+		<TopicName/>
+		<Answer>1</Answer>
+	</Test>
+	<Test id="9">
+		<Question> Which of the following commands is used to display your working directory? </Question>
+		<Options>
+			<Option id="1">dir</Option>
+			<Option id="2">prompt $p$g</Option>
+			<Option id="3">pwd</Option>
+			<Option id="4">path</Option>
+			<Option id="5">None of the above</Option>
+		</Options>
+		<Explaination>Wrong:Correct answer is option 3.</Explaination>
+		<TopicName/>
+		<Answer>3</Answer>
+	</Test>
+	<Test id="10">
+		<Question>Which command will be used with vi editor to replace text from cursor to right?</Question>
+		<Options>
+			<Option id="1">r</Option>
+			<Option id="2">R</Option>
+			<Option id="3">s</Option>
+			<Option id="4">S</Option>
+			<Option id="5">None of the above</Option>
+		</Options>
+		<Explaination>Wrong:Correct answer is option 2.</Explaination>
+		<TopicName/>
+		<Answer>2</Answer>
+	</Test>
+	<Test id="11">
+		<Question> Which of the following is not a filter? </Question>
+		<Options>
+			<Option id="1">cat</Option>
+			<Option id="2">grep</Option>
+			<Option id="3">wc</Option>
+			<Option id="4">sort</Option>
+			<Option id="5">None of the above</Option>
+		</Options>
+		<Explaination>Wrong:Correct answer is option 5.</Explaination>
+		<TopicName/>
+		<Answer>5</Answer>
+	</Test>
+	<Test id="12">
+		<Question>Which command will be used with vi editor to replace single character under cursor with any number of characters?</Question>
+		<Options>
+			<Option id="1">s</Option>
+			<Option id="2">S</Option>
+			<Option id="3">a</Option>
+			<Option id="4">i</Option>
+			<Option id="5">None of the above</Option>
+		</Options>
+		<Explaination>Wrong:Correct answer is option 1.</Explaination>
+		<TopicName/>
+		<Answer>1</Answer>
+	</Test>
+	<Test id="13">
+		<Question>A file x is created with the following contents
+		echo today is
+		date
+		     If you type x.then</Question>
+		<Options>
+			<Option id="1">It echoes the message followed by the date</Option>
+			<Option id="2">It gives the desired output only if the execute permission of the file x is set</Option>
+			<Option id="3">The desired output can be got by the command sh x. which works even if file x has its execute permission not set</Option>
+			<Option id="4">both option "2" and "3"</Option>
+			<Option id="5">None of the above</Option>
+		</Options>
+		<Explaination>Wrong:Correct answer is option 4.
+		When you create a file using an editor, it will be assign default permission setting (determined by the unmask value). Generally the execute permission will be off.So to run a shell script, set its execute bit on. However, if you run sh x, then fill x will be executed even if its execute bit is off.
+</Explaination>
+		<TopicName/>
+		<Answer>4</Answer>
+	</Test>
+	<Test id="14">
+		<Question> If cat x. prints garbage then x is prabably a </Question>
+		<Options>
+			<Option id="1">Data file</Option>
+			<Option id="2">Binary file</Option>
+			<Option id="3">Text file</Option>
+			<Option id="4">Source file</Option>
+			<Option id="5">None of the above</Option>
+		</Options>
+		<Explaination>Wrong:Correct answer is option 2.
+</Explaination>
+		<TopicName/>
+		<Answer>2</Answer>
+	</Test>
+	<Test id="15">
+		<Question>Which of the following file names can be found in more than one directory?</Question>
+		<Options>
+			<Option id="1">passwd</Option>
+			<Option id="2">bin</Option>
+			<Option id="3">date</Option>
+			<Option id="4">both option "1" and "2"</Option>
+			<Option id="5">None of the above</Option>
+		</Options>
+		<Explaination>Wrong:Correct answer is option 4.
+passwd - /etc/passwd and /bin/passwd
+bin -usr/bin and /bin
+</Explaination>
+		<Answer>4</Answer>
+	</Test>
+	<Test id="16">
+		<Question>Which of the following metacharecters will be recognized by the shell even if it comes within double quotes?</Question>
+		<Options>
+			<Option id="1">$</Option>
+			<Option id="2">*</Option>
+			<Option id="3">?</Option>
+			<Option id="4">None of the above</Option>
+		</Options>
+		<Explaination>Wrong:Correct answer is option 1.
+</Explaination>
+		<Answer>1</Answer>
+	</Test>
+	<Test id="17">
+		<Question>The number of errors in the following shell script
+		echo How r you?
+		read $answer
+		is - </Question>
+		<Options>
+			<Option id="1">0</Option>
+			<Option id="2">1</Option>
+			<Option id="3">2</Option>
+			<Option id="4">3</Option>
+		</Options>
+		<Explaination>Wrong:Correct answer is option 3
+		Two mistakes. First is the "?" in echo. It is a metacharacter. So when shell encounters "?" it will try for a match, With the files in the current directory. made up of just one character. Use ? , to supress the special meaning of ?. Second mistake is - $answer means the value of the variable answer. Since you are reading a value of the variable answer , it should be read answer</Explaination>
+		<TopicName/>
+		<Answer>3</Answer>
+	</Test>
+	<Test id="18">
+		<Question>The disadvantage of pipe is that</Question>
+		<Options>
+			<Option id="1">It is one way communication channnel</Option>
+			<Option id="2">It dies along with the process that created it</Option>
+			<Option id="3">It can't be shared by unrelated processes</Option>
+			<Option id="4">all of the above</Option>
+		</Options>
+		<Explaination>Wrong:Correct answer is option 4.</Explaination>
+		<Answer>4</Answer>
+	</Test>
+	<Test id="19">
+		<Question>Which of the following displays the exit status of the last executed command?</Question>
+		<Options>
+			<Option id="1">echo $4</Option>
+			<Option id="2">echo $$</Option>
+			<Option id="3">echo $?</Option>
+			<Option id="4">echo $!</Option>
+		</Options>
+		<Explaination>Wrong:Correct answer is option 3.</Explaination>
+		<Answer>3</Answer>
+	</Test>
+	<Test id="20">
+		<Question>The following program
+		main()
+		{
+		close(1);
+		print("How are you?");
+		}
+		</Question>
+		<Options>
+			<Option id="1">is syntactically incorrect</Option>
+			<Option id="2">results in run-time error</Option>
+			<Option id="3">will wait indefinitely , if executed </Option>
+			<Option id="4">None of the above</Option>
+		</Options>
+		<Explaination>Wrong:Correct answer is option 4.
+		The close statement closes the file , whose Tile descriptor is 1. i.e. stdout. So print f will fail and the program immediately terminates.
+</Explaination>
+		<Answer>4</Answer>
+	</Test>
+	<Test id="21">
+		<Question>The file named Samples contains a lot of text lines.Which ones of the commands below would give a count of how many times a word like for instance gmor occurred in the file?</Question>
+		<Options>
+			<Option id="1">grep gmor Samples | wc</Option>
+			<Option id="2">wc gmor Samples</Option>
+			<Option id="3">grep gmor Samples > wc</Option>
+			<Option id="4">grep gmor Samples</Option>
+		</Options>
+		<Explaination>Wrong:Correct answer is option 1.
+		The point is to understand that wc counts lines, that grep selects lines where a pattern is present.
+</Explaination>
+		<Answer>1</Answer>
+	</Test>
+	<Test id="22">
+		<Question>How could you check if two strings are equal?</Question>
+		<Options>
+			<Option id="1">test $a -eq $b</Option>
+			<Option id="2">test $a -equal $b</Option>
+			<Option id="3">test $a = $b</Option>
+			<Option id="4">sh -c test $a == $b</Option>
+		</Options>
+		<Explaination>Wrong:Correct answer is option 3.
+</Explaination>
+		<Answer>3</Answer>
+	</Test>
+	<Test id="23">
+		<Question>To start a process in the background, enter the command with this character at the end. </Question>
+		<Options>
+			<Option id="1">$</Option>
+			<Option id="2">#</Option>
+			<Option id="3">&amp;</Option>
+			<Option id="4">%</Option>
+		</Options>
+		<Explaination>Wrong:Correct answer is option 3.
+</Explaination>
+		<Answer>3</Answer>
+	</Test>
+	<Test id="24">
+		<Question>Use the following command to save and exit from Vi.</Question>
+		<Options>
+			<Option id="1">ZZ</Option>
+			<Option id="2">:wq</Option>
+			<Option id="3">:q!</Option>
+			<Option id="4">Both 1 and 2</Option>
+		</Options>
+		<Explaination>Wrong:Correct answer is option 2.
+</Explaination>
+		<Answer>2</Answer>
+	</Test>
+	<Test id="25">
+		<Question>The name of the Unix scheduling utility is</Question>
+		<Options>
+			<Option id="1">Sched</Option>
+			<Option id="2">Cron</Option>
+			<Option id="3">Sc</Option>
+			<Option id="4">Timer</Option>
+		</Options>
+		<Explaination>Wrong:Correct answer is option 2.
+</Explaination>
+		<Answer>2</Answer>
+	</Test>
+	<Test id="26">
+		<Question>Array values when assigned must be surrounded by</Question>
+		<Options>
+			<Option id="1">$ signs</Option>
+			<Option id="2">{ } (curly braces)</Option>
+			<Option id="3">[] (square brackets)</Option>
+			<Option id="4">( ) (parenthesis)</Option>
+		</Options>
+		<Explaination>Wrong:Correct answer is option 4.
+</Explaination>
+		<Answer>4</Answer>
+	</Test>
+	<Test id="27">
+		<Question>The purpose of the PATH environment variable is</Question>
+		<Options>
+			<Option id="1">Contains the current working directory</Option>
+			<Option id="2">The sequence of directories to be searched when entering a command</Option>
+			<Option id="3">Used to change directories</Option>
+			<Option id="4">None of the above</Option>
+		</Options>
+		<Explaination>Wrong:Correct answer is option 2.
+</Explaination>
+		<Answer>2</Answer>
+	</Test>
+		<Test id="28">
+		<Question>Some lines in an "if statement" are indented because</Question>
+		<Options>
+			<Option id="1">Required by the shell</Option>
+			<Option id="2">For better readability</Option>
+			<Option id="3">Both option 1 and 2</Option>
+			<Option id="4">None of the above</Option>
+		</Options>
+		<Explaination>Wrong:Correct answer is option 2.
+</Explaination>
+		<Answer>2</Answer>
+	</Test>
+		<Test id="29">
+		<Question>In "bash", "if" constructs are ended with</Question>
+		<Options>
+			<Option id="1">fi</Option>
+			<Option id="2">end</Option>
+			<Option id="3">endif</Option>
+			<Option id="4">None of the above</Option>
+		</Options>
+		<Explaination>Wrong:Correct answer is option 1.
+</Explaination>
+		<Answer>1</Answer>
+	</Test>
+</Tests>

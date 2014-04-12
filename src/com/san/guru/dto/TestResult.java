@@ -1,6 +1,8 @@
 package com.san.guru.dto;
 
 import java.io.Serializable;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.List;
 
 public class TestResult implements Serializable {
@@ -25,6 +27,11 @@ public class TestResult implements Serializable {
 
 	public float getPercent() {
 		return percent;
+	}
+	
+	public String getPercentStr() {
+		NumberFormat format = new DecimalFormat("##.##");
+		return format.format(percent);
 	}
 
 	public void setPercent(float percent) {

@@ -5,11 +5,42 @@ import java.util.List;
 public class Question {
 
 	private int id = 0;
+	
 	private String description = null;
+	private String explaination = null;
+	private String subject = null;
+	private int level = 0;
+	
 	private List<Option> options = null;
+	
 	private int answer = 0;
 	
 	private String userAnswer = null;
+
+	
+	public String getSubject() {
+		return subject;
+	}
+
+	public void setSubject(String subject) {
+		this.subject = subject;
+	}
+
+	public int getLevel() {
+		return level;
+	}
+
+	public void setLevel(int level) {
+		this.level = level;
+	}
+
+	public String getExplaination() {
+		return explaination;
+	}
+
+	public void setExplaination(String explaination) {
+		this.explaination = explaination;
+	}
 
 	public int getId() {
 		return id;
@@ -59,6 +90,13 @@ public class Question {
 				return true;
 			}
 		}
+		
+		return false;
+	}
+	
+	public boolean isAttempted() {
+		if (userAnswer != null && !"".equals(userAnswer.trim()))
+			return true;
 		
 		return false;
 	}

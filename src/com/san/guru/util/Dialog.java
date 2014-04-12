@@ -34,18 +34,18 @@ public class Dialog {
 							public void onClick(DialogInterface dialog,
 									int id) {
 
-									callback.call();
+									callback.call(null);
 							}
 						});
 		AlertDialog alertDialog = alertDialogBuilder.create();
 		alertDialog.show();
 	}
 	
-	public static void show(final Activity activity, 
+	public static void show(final Context context, 
 			final String message, 
 			final String title) {
 
-			AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(activity.getBaseContext());
+			AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
 			
 			// set title
 			alertDialogBuilder.setTitle(title);

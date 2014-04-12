@@ -1,27 +1,20 @@
 package com.san.guru.activities;
 
-import static com.san.guru.constant.AppContents.INTENT_DATA;
-import static com.san.guru.constant.AppContents.INTENT_RESULT;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.achartengine.ChartFactory;
-import org.achartengine.GraphicalView;
-import org.achartengine.chart.BarChart.Type;
-import org.achartengine.model.CategorySeries;
-import org.achartengine.model.XYMultipleSeriesDataset;
-import org.achartengine.renderer.SimpleSeriesRenderer;
-import org.achartengine.renderer.XYMultipleSeriesRenderer;
-import org.achartengine.renderer.XYMultipleSeriesRenderer.Orientation;
-
-import android.app.Activity;
+import static com.san.guru.constant.AppConstants.INTENT_DATA;
+import static com.san.guru.constant.AppConstants.INTENT_RESULT;
+import static com.san.guru.constant.AppConstants.LINKEDIN_POST;
+import static com.san.guru.constant.AppConstants.MODE;
+import static com.san.guru.constant.AppConstants.SM_CAPTION;
+import static com.san.guru.constant.AppConstants.SM_TITLE;
+import static com.san.guru.constant.AppConstants.SOCIAL_MEDIA_FB;
+import static com.san.guru.constant.AppConstants.SOCIAL_MEDIA_LN;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.Paint.Align;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.text.Html;
 import android.util.DisplayMetrics;
 import android.view.Menu;
@@ -31,24 +24,35 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.san.guru.R;
+import com.san.guru.constant.Mode;
 import com.san.guru.dto.IntentData;
 import com.san.guru.dto.SubjectResult;
 import com.san.guru.dto.TestResult;
+import com.san.guru.socialmedia.ISocialMediaHandler;
+import com.san.guru.socialmedia.SocialMediaHandlerFactory;
 import com.san.guru.util.DateTimeUtils;
 import com.san.guru.util.Dialog;
 import com.san.guru.util.ICallback;
+import com.san.guru.util.ResourceUtils;
 
-public class ResultActivity extends Activity {
+public class ResultActivity extends AbstractActivity {
 
-	private static final String STRING_FORMAT_PERCENT = "<b>Result</b><br><br> <font color='#254117'><b>%s</b> <br><small>%s out of %s</small>";
+	private static final String STRING_FORMAT_PERCENT = "<b>Result</b><br><br> <font color='#254117'><b>%s %%</b> <br><small>%s out of %s</small>";
 
-	private static final String STRING_FORMAT_PACE = "<b>Pace</b><br><br> <font color='#254117'><b>%s Q/Min</b> <br><small>Time:%s</small>";
+	private static final String STRING_FORMAT_PACE = "<b>Pace</b><br><br> <font color='#254117' ><b>%s Q/Min</b> <br><small>Time:%s</small>";
 
-	private TestResult result = null;
+	private TestResult result = new TestResult();
+	
+	int maxChars = 0;
 	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -58,7 +62,7 @@ public class ResultActivity extends Activity {
 	        	Dialog.show(this, "Are you sure ?", "Home", new ICallback() {
 					
 					@Override
-					public void call() {
+					public void call(Object obj) {
 						Intent intent = new Intent(ResultActivity.this, ChooseSubjectActivity.class);
 						ResultActivity.this.startActivity(intent);
 						
@@ -79,96 +83,73 @@ public class ResultActivity extends Activity {
 		return super.onCreateOptionsMenu(menu);
 	}
 	
-	protected XYMultipleSeriesDataset buildBarDataset(String[] titles,
-			List<double[]> values) {
-		XYMultipleSeriesDataset dataset = new XYMultipleSeriesDataset();
-		int length = titles.length;
-		for (int i = 0; i < length; i++) {
-			CategorySeries series = new CategorySeries(titles[i]);
-			double[] v = values.get(i);
-			int seriesLength = v.length;
-			for (int k = 0; k < seriesLength; k++) {
-				series.add(v[k]);
-			}
-			dataset.addSeries(series.toXYSeries());
-		}
-		return dataset;
-	}
-
-	protected XYMultipleSeriesRenderer buildBarRenderer(int[] colors) {
-		XYMultipleSeriesRenderer renderer = new XYMultipleSeriesRenderer();
-		renderer.setChartTitleTextSize(20);
-		renderer.setLabelsTextSize(20);
-		renderer.setPanEnabled(true, true);
-		renderer.setZoomEnabled(false, false);
-		int length = colors.length;
-		for (int i = 0; i < length; i++) {
-			SimpleSeriesRenderer r = new SimpleSeriesRenderer();
-			r.setColor(colors[i]);
-			renderer.addSeriesRenderer(r);
-		}
-
-		renderer.setXLabels(0);
-		renderer.setYLabels(0);
+	private void drawSubjectChart() {
 		
-		List<SubjectResult> subjectsResult = result.getSubjectResult();
-		for (int i = 0; i < subjectsResult.size(); i++) {
-			SubjectResult result = subjectsResult.get(i);
-			
-			renderer.addXTextLabel(i+1, String.format("%s (%s / %s)", 
-										result.getName(), 
-										result.getTotalCorrect(),
-										result.getTotalQuestions()));
+		if (result.getSubjectResult() == null)
+			return;
+		
+		TableLayout tableLayout = (TableLayout) findViewById(R.id.subjectTable);
+
+		for (SubjectResult subjectResult : result.getSubjectResult()) {
+			addRow(tableLayout, 
+					String.format("%s (%s/%s)", 
+							    subjectResult.getName(),
+							    subjectResult.getTotalCorrect(),
+							    subjectResult.getTotalQuestions()), 
+					subjectResult.getPercent());
 		}
+	}
+	
+	@SuppressLint("NewApi")
+	private void addRow(TableLayout tableLayout, String name, float percent) {
+		
+		android.widget.TableRow.LayoutParams textParams = new android.widget.TableRow.LayoutParams();
+		textParams.width = textParams.MATCH_PARENT;
+		textParams.height = textParams.WRAP_CONTENT;
+		textParams.setMargins(10, 0, 0, 10);
+		
+		android.widget.TableRow.LayoutParams params = new android.widget.TableRow.LayoutParams();
+		params.width = params.MATCH_PARENT;
+		params.height = params.WRAP_CONTENT;
+		params.weight = 1.0f;
+		params.setMargins(10, 0, 10, 0);
+		
+		ProgressBar progressBar = new ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal);
+		progressBar.setLayoutParams(params);
+		progressBar.setProgress((int)percent);
+		progressBar.setProgressDrawable(getResources().getDrawable(R.drawable.customprogressbar));
 
-		return renderer;
+		TextView view = new TextView(this);
+		view.setLayoutParams(textParams);
+		view.setText(name);
+		view.setTextColor(Color.parseColor("#4682B4"));
+		view.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_END);
+		
+		TableRow tableRow = new TableRow(this);
+		tableRow.setLayoutParams(params);
+		tableRow.addView(view);
+		tableRow.addView(progressBar);
+		
+		tableLayout.addView(tableRow);
 	}
 
-	protected void setChartSettings(XYMultipleSeriesRenderer renderer,
-			String title, String xTitle, String yTitle, double xMin,
-			double xMax, double yMin, double yMax, int axesColor,
-			int labelsColor) {
-		renderer.setChartTitle(title);
-		renderer.setXTitle(xTitle);
-		renderer.setYTitle(yTitle);
-		renderer.setXAxisMin(xMin);
-		renderer.setXAxisMax(xMax);
-		renderer.setYAxisMin(yMin);
-		renderer.setYAxisMax(yMax);
-		renderer.setLabelsColor(labelsColor);
-		renderer.setZoomEnabled(false);
-		renderer.setExternalZoomEnabled(true);
-		renderer.setPanEnabled(false, false);
-		renderer.setZoomEnabled(false, false);
-		renderer.setShowLegend(false);
-		renderer.setShowGrid(false);
-		renderer.setShowAxes(false);
-
-		renderer.setMarginsColor(Color.parseColor("#FBFBFC"));
-		renderer.setXLabelsColor(Color.BLACK);
-		renderer.setYLabelsColor(0, Color.WHITE);
-		renderer.setMargins(new int[] {30, 70, 10, 0});
-
-
-		renderer.setOrientation(Orientation.VERTICAL);
-
-		renderer.setYLabelsAngle(90f);
-		renderer.setBarSpacing(0.5);
-
-		renderer.setLabelsColor(Color.BLACK);
-	}
-
+	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle bundle) {
 		super.onCreate(bundle);
 
 		IntentData intentData = null;
 
-		String totalTime = null;
+		if (android.os.Build.VERSION.SDK_INT > 9) {
+		      StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+		      StrictMode.setThreadPolicy(policy);
+		}
+		
+		String totalTime = "00:00:00";
 
 		setContentView(R.layout.layout_result);
 
-		Intent intent = getIntent();
+		final Intent intent = getIntent();
 		if (intent != null && intent.getExtras() != null) {
 			intentData = (IntentData) intent.getExtras().get(INTENT_DATA);
 
@@ -197,60 +178,127 @@ public class ResultActivity extends Activity {
 		layoutParams1.width = width - (int) (width * 0.60);
 
 		view.setText(Html.fromHtml(String.format(STRING_FORMAT_PERCENT,
-				result.getPercent(), result.getTotalCorrect(),
+				result.getPercentStr(), result.getTotalCorrect(),
 				result.getTotalQuestions())));
 		view1.setText(Html.fromHtml(String.format(STRING_FORMAT_PACE,
 				result.getPace(), totalTime)));
-
-		// XYMultipleSeriesRenderer renderer = getTruitonBarRenderer();
-		// renderer.setXAxisMax((int)(height - (int)height * 0.5));
-		// renderer.setShowAxes(false);
-		// myChartSettings(renderer);
-
-		LinearLayout layout = (LinearLayout) findViewById(R.id.chart);
-
-		String[] titles = new String[] { "CORRECT", "WRONG" };
-		List<double[]> values = new ArrayList<double[]>();
-		//values.add(new double[] { 100, 100, 100, 100, 100, 100, 100, 100, 100,	100, 100, 100 });
-		//values.add(new double[] { 50, 30, 60, 100, 90, 10, 0, 65, 75.7, 90, 16,	14 });
 		
-		List<SubjectResult> subjectResult = result.getSubjectResult();
-		double[] X = new double[subjectResult.size()];
-		double[] Y = new double[subjectResult.size()];
+		ImageButton facebook = (ImageButton) findViewById(R.id.imgBFacebook);
+		ImageButton linkedIn = (ImageButton) findViewById(R.id.imgBLinkedIn);
 		
-		for (int i =0 ; i<subjectResult.size();i++) {
-			Y[i] = subjectResult.get(i).getPercent();
-		}
-		for (int i =0 ; i<subjectResult.size();i++) {
-			X[i] = 100;
-		}
+		LinearLayout smLinearLayout = (LinearLayout) findViewById(R.id.smLinearLayout);
+		View grid2 = (View) findViewById(R.id.grid_2);
 		
-		values.add(X); values.add(Y);
+		int smLayoutHeight = smLinearLayout.getLayoutParams().height;
 		
-		int[] colors = new int[] { Color.parseColor("#FE0000"),	Color.parseColor("#6E8B3D") };
-		XYMultipleSeriesRenderer renderer = buildBarRenderer(colors);
-		setChartSettings(renderer, "Subject wise result", "", "", 0.5, 12.5, 0,	100, Color.GRAY, Color.LTGRAY);
-		renderer.getSeriesRendererAt(0).setDisplayChartValues(true);
-		renderer.getSeriesRendererAt(1).setDisplayChartValues(true);
-		// renderer.setXLabels(12);
-		// renderer.setYLabels(10);
-		renderer.setXLabelsAlign(Align.RIGHT);
-		renderer.setYLabelsAlign(Align.RIGHT);
-		renderer.setPanEnabled(true, false);
-		renderer.setZoomEnabled(false, false);
-		renderer.setZoomRate(1f);
-		renderer.setBarSpacing(0.5f);
+		
+		TableLayout tableLayout = (TableLayout) findViewById(R.id.subjectTable);
+		LayoutParams tableLayoutParams = tableLayout.getLayoutParams();
+		tableLayoutParams.height = height - (smLayoutHeight+ grid2.getLayoutParams().height+layoutParams.height + (int) (height * 0.35));
+		
+		drawSubjectChart();
 
-		GraphicalView barChartView = ChartFactory.getBarChartView(this,
-				buildBarDataset(titles, values), renderer, Type.STACKED);
-		layout.addView(barChartView, new LayoutParams(width,
-				(int) (height - (int) height * 0.5)));
-
-		Button quitTestButton = (Button) findViewById(R.id.butQuitTest);
+		final Button quitTestButton = (Button) findViewById(R.id.butQuitTest);
+		final Button reviewTestButton = (Button) findViewById(R.id.butReview);
+		final Button feedbackButton = (Button) findViewById(R.id.butFeedback);
+		
+		feedbackButton.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				feedbackButton.setBackgroundColor(Color.parseColor(com.san.guru.constant.Color.STEEL_BLUE));
+				reviewTestButton.setBackgroundColor(Color.parseColor(com.san.guru.constant.Color.GRAY));
+				quitTestButton.setBackgroundColor(Color.parseColor(com.san.guru.constant.Color.GRAY));
+				
+				Intent email = new Intent(Intent.ACTION_SEND);
+				email.putExtra(Intent.EXTRA_EMAIL, new String[]{"gadkari.santosh@gmail.com"});		  
+				email.putExtra(Intent.EXTRA_SUBJECT, "subject");
+				email.putExtra(Intent.EXTRA_TEXT, "message");
+				email.setType("message/rfc822");
+				startActivity(Intent.createChooser(email, "Choose an Email client :"));
+			}
+		});
+		
+		facebook.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Bundle bundle = new Bundle();
+				bundle.putString(SM_TITLE, String.format("I Got %s %%(%s Out Of %s)", 
+											result.getPercentStr(),
+											result.getTotalCorrect(),
+											result.getTotalQuestions()));
+				
+				bundle.putString(SM_CAPTION, getSubjects(result));
+				
+				if (!ResourceUtils.isNetworkAvailable(ResultActivity.this)) {
+					Toast.makeText(ResultActivity.this, "Check your Internet connection.", 100).show();
+					return;
+				}
+				
+				//get selected items
+				Toast.makeText(ResultActivity.this, SOCIAL_MEDIA_FB, Toast.LENGTH_SHORT).show();
+				
+				ISocialMediaHandler socialMediaHandler = SocialMediaHandlerFactory.getInstance().getSocialMediaHandler(SOCIAL_MEDIA_FB);
+				socialMediaHandler.init(ResultActivity.this);
+				socialMediaHandler.post(ResultActivity.this, bundle);
+			}
+		});
+		
+		linkedIn.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Bundle bundle = new Bundle();
+				bundle.putString(SM_TITLE, String.format("I Got %s %%(%s Out Of %s)", 
+											result.getPercentStr(),
+											result.getTotalCorrect(),
+											result.getTotalQuestions()));
+				
+				bundle.putString(SM_CAPTION, getSubjects(result));
+				bundle.putString(LINKEDIN_POST, "Tested my skills with JavaQ");
+				
+				if (!ResourceUtils.isNetworkAvailable(ResultActivity.this)) {
+					Toast.makeText(ResultActivity.this, "Check your Internet connection.", 100).show();
+					return;
+				}
+				
+				//get selected items
+				Toast.makeText(ResultActivity.this, SOCIAL_MEDIA_LN, Toast.LENGTH_SHORT).show();
+				
+				ISocialMediaHandler socialMediaHandler = SocialMediaHandlerFactory.getInstance().getSocialMediaHandler(SOCIAL_MEDIA_LN);
+				socialMediaHandler.init(ResultActivity.this);
+				socialMediaHandler.post(ResultActivity.this, bundle);
+			}
+		});
+		        
+		reviewTestButton.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				feedbackButton.setBackgroundColor(Color.parseColor(com.san.guru.constant.Color.GRAY));
+				reviewTestButton.setBackgroundColor(Color.parseColor(com.san.guru.constant.Color.STEEL_BLUE));
+				quitTestButton.setBackgroundColor(Color.parseColor(com.san.guru.constant.Color.GRAY));
+				
+				Intent backIntent = new Intent(ResultActivity.this, QuestionActivity.class);
+				IntentData intentData = (IntentData) intent.getExtras().get(INTENT_DATA);
+				intentData.putValue(MODE, Mode.REVIEW);
+				
+				backIntent.putExtra(INTENT_DATA, intentData);
+				ResultActivity.this.startActivity(backIntent);
+				
+				finish();
+			}
+		});
+		
 		quitTestButton.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
+				
+				feedbackButton.setBackgroundColor(Color.parseColor(com.san.guru.constant.Color.GRAY));
+				reviewTestButton.setBackgroundColor(Color.parseColor(com.san.guru.constant.Color.GRAY));
+				quitTestButton.setBackgroundColor(Color.parseColor(com.san.guru.constant.Color.STEEL_BLUE));
 
 				AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
 						v.getContext());
@@ -282,6 +330,19 @@ public class ResultActivity extends Activity {
 				alertDialog.show();
 			}
 		});
+	}
+	
+	private String getSubjects(TestResult result) {
+		StringBuffer subjectNames = new StringBuffer();
+		
+		for (SubjectResult sr : result.getSubjectResult()) {
+			if (sr.getName().startsWith("Domain"))
+				subjectNames.append( sr.getName().replace("Domain", "") ).append(".");
+			else
+				subjectNames.append( sr.getName() ).append(".");
+		}
+		
+		return subjectNames.toString();
 	}
 
 }

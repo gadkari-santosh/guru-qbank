@@ -1,153 +1,274 @@
 package com.san.guru.model;
 
+import static com.san.guru.constant.AppConstants.ATTEMPTED_FILE_FORMAT;
+
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathFactory;
-
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.AssetManager;
-import android.content.res.Resources;
-import android.content.res.XmlResourceParser;
+import android.util.Log;
+import android.widget.Toast;
 
-import com.san.guru.R;
-import com.san.guru.dto.Option;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.san.guru.dto.Attempted;
 import com.san.guru.dto.Question;
+import com.san.guru.util.FileUtil;
+import com.san.guru.util.GsonUtil;
 
 public class QuestionBank {
+	private static final String LOG_TAG = "QuestionBank";
+	
+	private static QuestionBank INSTANCE = null; 
 
-//	Activity activity = null;
-	
-	XmlResourceParser xml = null;
-	
 	private List<Subject> subjects = new ArrayList<Subject>();
 	
-	Map<Integer, Question> questions = new HashMap<Integer, Question>();
+	private int correct = 0;
+	private int wrong = 0;
+	private int attempt = 0;
 	
-	int correct = 0;
-	int wrong = 0;
-	
-	private int count = 0;
+	private int count = -1;
 	
 	private Context ctx = null;
-	List<Question> listOfQuestions = new ArrayList();
 	
-	public QuestionBank(Context ctx) {
+	private List<Question> listOfQuestions = new ArrayList();
+	
+	private Map<String, Map<Integer, Question>> qBank = new HashMap<String, Map<Integer,Question>>();
+	
+	private Map<String,Integer> config = new HashMap<String, Integer>();
+	
+	private boolean init = false;
+	
+	private QuestionBank(Context ctx) {
 		this.ctx = ctx;
 	}
 	
-	Map<String, Map<Integer, Question>> qBank = new HashMap<String, Map<Integer,Question>>();
+	public static synchronized QuestionBank getNewInstance(Context context) {
+		if (INSTANCE == null)
+			INSTANCE = new QuestionBank(context);
+		
+		return INSTANCE;
+	}
 	
-	Map<String,Integer> config = new HashMap<String, Integer>();
+	public static QuestionBank getInstance() {
+		return INSTANCE;
+	}
 	
-	public void init(List<String> skillSet) {
-//		loadStaticData();
-//		
-//		Resources res = activity.getResources();
-//		this.subjects = skillSet;
-//		
-//		for (String skill : skillSet) {
-//			load(new InputSource(res.openRawResource( config.get(skill.toUpperCase()) )), skill);
-//		}
+	public boolean isInitialized() {
+		return init;
+	}
+	
+	public void init(Set<String> subjects) {
+		init(subjects, -1);
+	}
+	
+	public void init(Set<String> skillSet, int numQuestions) {
+		init = false;
+		
+		subjects.clear();
+		listOfQuestions.clear();
+		qBank.clear();
+		
+		count = -1;
+		correct =0;
+		wrong = 0;
 		
 		Subjects subjects = Subjects.getInstance();
 		
 		AssetManager assetManager = ctx.getAssets();
 		
+		int select = numQuestions / skillSet.size();
+		int remaining = numQuestions % skillSet.size();
+		
+		
 		for (String subjectName : skillSet) {
+			if ("All".equalsIgnoreCase(subjectName))
+				continue;
+			
 			Subject subject = subjects.getSubject(subjectName);
 			
 			try {
-				List<Question> questions = load(new InputSource(assetManager.open(subject.getQuestionSetFile())), subject.getName());
 				
-				subject.setQuestionSet(questions);
+				InputSource inputSource = null;
+				
+				switch (subject.getFileSource()) {
+					case APP:
+						inputSource = new InputSource(assetManager.open(subject.getQuestionSetFile()));
+						break;
+					case LOCAL_STORAGE:
+						inputSource = new InputSource(ctx.openFileInput(subject.getQuestionSetFile()));
+						break;
+				}
+				
+				List<Question> questions = load(inputSource, subject.getName());
+				
+				List<Question> unAttemptedQuestions = null;
+				
+				if ( remaining > 0) {
+					unAttemptedQuestions = getUnAttemptedQuestions(subjectName, questions, select + 1);
+					remaining--;
+				} else { 
+					unAttemptedQuestions = getUnAttemptedQuestions(subjectName, questions, select);
+				}
+				
+				listOfQuestions.addAll(unAttemptedQuestions);
+				subject.setQuestionSet(unAttemptedQuestions);
 				
 				this.subjects.add(subject);
 				
 			} catch (IOException e) {
+				Log.e(LOG_TAG, e.toString(), e);
 				e.printStackTrace();
 			}
 		}
+		
+		init = true;
 	}
 	
-	private List<Question> load(InputSource inputStream, String skill) {
-		int qId = 0;
-		Map<Integer, Question> subject = new HashMap<Integer, Question>();
+	private List<Question> getUnAttemptedQuestions(String subject, List<Question> questions, int select) {
+		String attemptFileName = String.format(ATTEMPTED_FILE_FORMAT, subject);
 		
-		List<Question> questions = new ArrayList<Question>();
+		Attempted attempted = null;
 		
-		try {
-
-			XPath xpath = XPathFactory.newInstance().newXPath();
-			String expression = "//Test";
-			NodeList nodes = null;
-			
-			nodes = (NodeList) xpath.evaluate(expression, inputStream, XPathConstants.NODESET);
-			
-			for (int i=0; i<nodes.getLength(); i++) {
-				Question question = new Question();
-				
-				Node node = nodes.item(i);
-				
-				qId =  Integer.parseInt(xpath.evaluate("@id", node));
-				question.setId(qId);
-				question.setDescription( xpath.evaluate("Description", node) );
-				question.setAnswer( Integer.parseInt(xpath.evaluate("Answer", node)) );
-				
-				List<Option> options = new ArrayList<Option>();
-				
-				NodeList optionNodeList = (NodeList) xpath.evaluate("Options/Option", node, XPathConstants.NODESET);
-				for (int j=0; j<optionNodeList.getLength(); j++) {
-					
-					Option option = new Option();
-					
-					Node optionNode = (Node) optionNodeList.item(j);
-					
-					option.setId( Integer.parseInt(xpath.evaluate("@id", optionNode)));
-					option.setText( optionNode.getTextContent().trim() );
-					
-					options.add(option);
-				}
-				question.setOptions(options);
-				subject.put(qId, question);
-				listOfQuestions.add(question);
-				
-				questions.add(question);
-			}
-			
-			this.qBank.put(skill, subject);
-			
-		} catch (Exception e) {
-			throw new RuntimeException(e);
+		List<Question> unAttemptedQuestions = new ArrayList<Question>();
+		
+		if (!FileUtil.exists(ctx, attemptFileName)) {
+			attempted = makeAllQuestionsUnAttempted(attemptFileName, subject, questions);
+		} else {
+			String json = FileUtil.getFile(ctx, attemptFileName);
+			if (json == null || "".equals(json.trim())) {
+				attempted = makeAllQuestionsUnAttempted(attemptFileName, subject, questions);
+			} else {
+				attempted = GsonUtil.getObject(json, Attempted.class);
+			}			
 		}
 		
-		return questions;
+		// Two possibilities. either file exists or becaise of error while creating
+		// new file, attempted file may not be created.
+		
+		if (attempted != null) {
+			Iterator<Integer> unattempedIds = attempted.getUnAttemped().iterator();
+			for (int i=0; i<select; i++) {
+				if (unattempedIds.hasNext()) {
+					int id = unattempedIds.next();
+					if (questions.size() > id) {
+						Question question = questions.get(id);
+						question.setSubject(subject);
+						
+						unAttemptedQuestions.add(question); 
+					} else {
+						attempted = makeAllQuestionsUnAttempted(attemptFileName, subject, questions);
+						unattempedIds = attempted.getUnAttemped().iterator();
+						i--;
+					}
+				} else {
+					attempted = makeAllQuestionsUnAttempted(attemptFileName, subject, questions);
+					unattempedIds = attempted.getUnAttemped().iterator();
+					i--;
+				}
+			}
+		}
+		
+		return unAttemptedQuestions;
 	}
 	
-	public Question getQuestion(int id) {
-		return questions.get(id);
+	private Attempted makeAllQuestionsUnAttempted(String attemptFileName, 
+											 String subject,
+											 List<Question> questions) {
+		Attempted attempted = null;
+		
+		try {
+			OutputStream output = ctx.openFileOutput(attemptFileName, Context.MODE_PRIVATE);
+			
+			attempted = new Attempted();
+			attempted.setSubject(subject);
+			attempted.setNumQuestions(questions.size());
+			
+			Set<Integer> unatttempted = new HashSet();
+			for (Question question : questions) {
+				unatttempted.add(question.getId());
+			}
+			attempted.setUnAttemped(unatttempted);
+			
+			String fileContent = GsonUtil.getJSon(attempted, Attempted.class);
+			
+			PrintWriter writer = new PrintWriter(output);
+			writer.write(fileContent);
+			writer.flush();
+			writer.close();
+			
+		} catch (FileNotFoundException e1) {
+			Log.e(LOG_TAG, e1.toString(), e1);
+			Toast.makeText(ctx, "Unable to create File. Please check settings or space on your mobile.", 100);
+		}
+		
+		return attempted;
+	}
+	
+	private List<Question> load(InputSource inputStream, String skill) throws IOException {
+		InputStream reader = inputStream.getByteStream();
+        
+		StringBuilder b = new StringBuilder();
+        BufferedReader r = new BufferedReader(new InputStreamReader(reader));
+        
+        for(String line; (line = r.readLine()) != null; ) {
+            b.append(line).append("\n");
+        }
+
+        Type listOfTestObject = new TypeToken<List<Question>>(){}.getType();
+        Gson gson = new Gson();
+        List<Question> obj = gson.fromJson(b.toString(), listOfTestObject);
+        
+        return obj;
 	}
 	
 	public Question nextQuestion() {
+		count++;
 		
 		Question question = null;
 		if (listOfQuestions.size() == count)
 			return null;
 		
-		question = listOfQuestions.get(count++);
-		question.setId(count);
+		question = listOfQuestions.get(count);
+		//question.setId(count+1);
 		
 		return question;
+	}
+	
+	public int getSequence() {
+		return count;
+	}
+	
+	public Question backQuestion() {
+		
+		Question question = null;
+		if (count <= 0)
+			return null;
+		
+		question = listOfQuestions.get(--count);
+		question.setId(count+1);
+		
+		return question;
+	}
+	
+	public void resetCounter() {
+		count = -1;
 	}
 	
 	public int getMaxQuestions() {
@@ -155,11 +276,16 @@ public class QuestionBank {
 	}
 	
 	public void result() {
+		correct = 0;
+		wrong   = 0;
+		attempt = 0;
+		
 		for (Subject subject : subjects) {
 			subject.result();
 			
 			correct = correct + subject.getNumCorrrect();
 			wrong = wrong + subject.getNumWrong();
+			attempt = attempt + subject.getNumAttempted();
 		}
 	}
 	
@@ -171,7 +297,22 @@ public class QuestionBank {
 		return wrong;
 	}
 	
+	public int getNumAttempted() {
+		return attempt;
+	}
+	
 	public List<Subject> getSubjects() {
 		return subjects;
+	}
+	
+	public void markAttempted(Question question) {
+		String attemptFileName = String.format(ATTEMPTED_FILE_FORMAT, question.getSubject());
+		
+		String content = FileUtil.getFile(ctx, attemptFileName);
+		Attempted attempted = GsonUtil.getObject(content, Attempted.class);
+		attempted.getUnAttemped().remove(question.getId());
+		
+		String json = GsonUtil.getJSon(attempted, Attempted.class);
+		FileUtil.saveFileInPhone(ctx, attemptFileName, json);
 	}
 }

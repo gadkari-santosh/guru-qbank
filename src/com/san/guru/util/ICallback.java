@@ -2,5 +2,5 @@ package com.san.guru.util;
 
 public interface ICallback {
 
-	public void call();
+	public void call(Object object);
 }

@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Subjects>
-    <Subject id="1" name="Xml" file="test_xml.xml" />
-    <Subject id="2" name="Core Java" file="test_xml.xml" />
-    <Subject id="3" name="Spring" file="test_xml.xml" />
-    <Subject id="4" name="Hibernate" file="test_xml.xml" />
-    <Subject id="5" name="Servlet" file="test_xml.xml" />
-    <Subject id="6" name="JSP" file="test_xml.xml" />
-    <Subject id="7" name="SQL" file="test_xml.xml" />
-    <Subject id="8" name="Design Patterns" file="test_xml.xml" />
-    <Subject id="9" name="Java Script" file="test_xml.xml" />
-    <Subject id="10" name="Banking-FX" file="test_xml.xml" />
-    <Subject id="11" name="Banking-Derivaties" file="test_xml.xml" />
+    <Subject id="1" name="Xml" file="test.json" />
+    <Subject id="2" name="Core Java" file="test.json" />
+    <Subject id="3" name="Spring" file="test.json" />
+    <Subject id="4" name="Hibernate" file="test.json" />
+    <Subject id="5" name="Servlet" file="test.json" />
+    <Subject id="6" name="JSP" file="test.json" />
+    <Subject id="7" name="SQL" file="test.json" />
+    <Subject id="8" name="Design Patterns" file="test.json" />
+    <Subject id="9" name="Java Script" file="test.json" />
+    <Subject id="10" name="Banking-FX" file="test.json" />
+    <Subject id="11" name="Banking-Derivaties" file="test.json" />
 </Subjects>

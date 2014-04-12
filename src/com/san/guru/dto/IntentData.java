@@ -17,7 +17,18 @@ public class IntentData implements Serializable {
 		return data.get(key);
 	}
 	
+	public Object getValue(String key, Object defaultValue) {
+		if (data.containsKey(key))
+			return data.get(key);
+		else
+			return defaultValue;
+	}
+	
 	public void putValue(String key, Serializable object) {
 		data.put(key, object);
+	}
+	
+	public boolean contains(String key) {
+		return data.containsKey(key);
 	}
 }

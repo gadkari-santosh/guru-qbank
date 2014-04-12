@@ -1,13 +1,14 @@
 package com.san.guru.activities;
 
-import static com.san.guru.constant.AppContents.INTENT_DATA;
+import static com.san.guru.constant.AppConstants.*;
+import static com.san.guru.constant.AppConstants.INTENT_NUM_QUESTION;
+import static com.san.guru.constant.AppConstants.MODE;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -19,13 +20,18 @@ import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.NumberPicker;
+import android.widget.NumberPicker.OnValueChangeListener;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.san.guru.R;
+import com.san.guru.constant.Mode;
+import com.san.guru.dto.IntentData;
+import com.san.guru.model.QuestionBank;
 import com.san.guru.util.Dialog;
 import com.san.guru.util.ICallback;
 
-public class TestTypeActivity extends Activity {
+public class TestTypeActivity extends AbstractActivity {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -35,7 +41,7 @@ public class TestTypeActivity extends Activity {
 	        	Dialog.show(this, "Are you sure ?", "Home", new ICallback() {
 					
 					@Override
-					public void call() {
+					public void call(Object obj) {
 						Intent intent = new Intent(TestTypeActivity.this, ChooseSubjectActivity.class);
 						TestTypeActivity.this.startActivity(intent);
 						
@@ -62,32 +68,28 @@ public class TestTypeActivity extends Activity {
 		
 		super.onCreate(savedInstanceState);
 		
-//		ActionBar ab = getActionBar();
-//	    ab.setHomeButtonEnabled(true);
-//	    ab.setDisplayHomeAsUpEnabled(true);
-//	    ab.setNavigationMode(ActionBar.DISPLAY_SHOW_HOME);
-//	    ab.show();
-
 		setContentView(R.layout.layout_choose_test_type);
 		
 		final Button nextButton = (Button) findViewById(R.id.butTrdTypNext);
 		final Button prevButton = (Button) findViewById(R.id.butTrdTypPrev);
 		
-		Spinner spinner2 = (Spinner) findViewById(R.id.spinner1);
-		NumberPicker findViewById = (NumberPicker) findViewById(R.id.numberPicker1);
-		findViewById.setMaxValue(50);
-		findViewById.setMinValue(20);
-		List<String> list = new ArrayList<String>();
-		list.add("Practice Test");
-		list.add("Timed Test");
-		list.add("Rapid Fire");
-		spinner2.setPrompt("Select test type");
+		TextView text = (TextView) findViewById(R.id.textNumQuestion);
+		text.setTextSize(15);
 		
-		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,
-			android.R.layout.simple_spinner_dropdown_item, list);
-		dataAdapter.setDropDownViewResource(android.R.layout.simple_list_item_single_choice);
-		spinner2.setAdapter(dataAdapter);
-
+		NumberPicker numPicker = (NumberPicker) findViewById(R.id.numberPicker1);
+		numPicker.setMaxValue(50);
+		numPicker.setMinValue(20);
+		
+		// Used atomic interger just to make integer as final.
+		final AtomicInteger numQuestion = new AtomicInteger(numPicker.getValue());
+		
+		numPicker.setOnValueChangedListener(new OnValueChangeListener() {
+			
+			@Override
+			public void onValueChange(NumberPicker numberpicker, int oldValue, int newValue) {
+				numQuestion.set(newValue);
+			}
+		});
 		
 		nextButton.setOnClickListener(new OnClickListener() {
 			
@@ -96,8 +98,13 @@ public class TestTypeActivity extends Activity {
 				nextButton.setBackgroundColor(Color.parseColor(com.san.guru.constant.Color.STEEL_BLUE));
 				prevButton.setBackgroundColor(Color.parseColor(com.san.guru.constant.Color.GRAY));
 				
+				QuestionBank.getNewInstance(v.getContext());
+				
 				Intent intent = new Intent(TestTypeActivity.this, QuestionActivity.class);
-				restoreIntent(intent, TestTypeActivity.this.getIntent());
+				IntentData intentData = restoreIntent(intent, TestTypeActivity.this.getIntent());
+				
+				// Assuming intentdata will always present.
+				intentData.putValue(INTENT_NUM_QUESTION, numQuestion.get());
 				
 		        TestTypeActivity.this.startActivity(intent);
 		        
@@ -113,17 +120,25 @@ public class TestTypeActivity extends Activity {
 				nextButton.setBackgroundColor(Color.parseColor(com.san.guru.constant.Color.GRAY));
 				
 				Intent intent = new Intent(TestTypeActivity.this, ChooseSubjectActivity.class);
-				restoreIntent(intent, TestTypeActivity.this.getIntent());
+				IntentData intentData = restoreIntent(intent, TestTypeActivity.this.getIntent());
 				
 		        TestTypeActivity.this.startActivity(intent);
 		        
 		        finish();
 			}
 		});
+		
+		setHeightOfMainArea();
 	}
 	
-	private void restoreIntent(Intent to, Intent from) {
-		if (from.getExtras() != null)
-			to.putExtra(INTENT_DATA, (Serializable) from.getExtras().get(INTENT_DATA));
+	private IntentData restoreIntent(Intent to, Intent from) {
+		IntentData intentData = null;
+		if (from.getExtras() != null) {
+			intentData = (IntentData) from.getExtras().get(INTENT_DATA);
+			intentData.putValue(MODE, Mode.TEST);
+			to.putExtra(INTENT_DATA, intentData);
+		} 
+		
+		return intentData;
 	}
 }

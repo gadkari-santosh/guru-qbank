@@ -40,7 +40,7 @@ public class SanClock {
 				
 			    String time = DateTimeUtils.getTimeString(secs);
 
-				textView.setText("Time : " + time);
+				textView.setText(time);
 			}
 		};
 

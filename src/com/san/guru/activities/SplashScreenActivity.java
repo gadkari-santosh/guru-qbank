@@ -20,7 +20,7 @@ import android.os.Bundle;
 import android.os.Handler;
 
 import com.san.guru.R;
-import com.san.guru.model.Subject;
+import com.san.guru.model.QuestionBank;
 import com.san.guru.model.Subjects;
 
 /**
@@ -52,9 +52,14 @@ public class SplashScreenActivity extends Activity {
 	    }, DELAY);
 	}
 	
+	// Santosh, it may happen that the init may take little longer than splash screen.
+	// handle this scenario.
 	private void init() {
 		
 		// 1. Load all subjects data.
 		Subjects.getInstance().init(this);
+		
+		// 2. Load question bank.
+		QuestionBank.getNewInstance(this);
 	}
 }
