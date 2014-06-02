@@ -1,5 +1,6 @@
 package com.san.guru.util;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -9,6 +10,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 
 import android.content.Context;
 import android.content.res.AssetManager;
@@ -92,5 +96,61 @@ public class FileUtil {
 			Log.e(LOG_TAG, e.toString(), e);
 			return null;
 		}
+	}
+	
+	public static long getFileSize(Context ctx, String fileName) {
+		try {
+			long size = ctx.getFileStreamPath(fileName).length();
+			return size/1024;
+		} catch (Exception exp) {
+			return 0;
+		}
+	}
+	
+	public static boolean deleteFile(Context ctx, String fileName) {
+		try {
+			File file = ctx.getFileStreamPath(fileName);
+			file.delete();
+			
+			return true;
+		} catch (Exception exp) {
+			exp.printStackTrace();
+			return false;
+		}
+	}
+	
+	public static boolean deleteAppDirFiles(Context ctx) {
+		try {
+			File dir = new File(ctx.getApplicationInfo().dataDir);
+			File[] listFiles = dir.listFiles();
+			for(File file : listFiles) {
+				file.delete();
+			}
+			
+			return true;
+		} catch (Exception exp) {
+			exp.printStackTrace();
+			return false;
+		}
+	}
+	
+	public static String readFromUrl(String webUrl) throws Exception {
+        
+		URL url = new URL(webUrl);
+        URLConnection conection = url.openConnection();
+        conection.connect();
+         
+        InputStreamReader reader = new InputStreamReader(url.openStream());
+        
+        BufferedReader re = new BufferedReader(reader);
+        
+        String line = new String();
+        StringBuilder content = new StringBuilder();
+        
+        while ( (line =re.readLine()) != null ) {
+        	content.append(line);
+        }
+        
+        return content.toString();
 	}
 }

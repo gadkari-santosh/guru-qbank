@@ -5,18 +5,26 @@ import static com.san.guru.constant.AppConstants.INTENT_RESULT;
 import static com.san.guru.constant.AppConstants.LINKEDIN_POST;
 import static com.san.guru.constant.AppConstants.MODE;
 import static com.san.guru.constant.AppConstants.SM_CAPTION;
+import static com.san.guru.constant.AppConstants.SM_DESC;
 import static com.san.guru.constant.AppConstants.SM_TITLE;
 import static com.san.guru.constant.AppConstants.SOCIAL_MEDIA_FB;
 import static com.san.guru.constant.AppConstants.SOCIAL_MEDIA_LN;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.StrictMode;
-import android.text.Html;
+import android.support.v7.widget.GridLayout;
 import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -24,14 +32,17 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.san.guru.R;
 import com.san.guru.constant.Mode;
 import com.san.guru.dto.IntentData;
@@ -41,18 +52,22 @@ import com.san.guru.socialmedia.ISocialMediaHandler;
 import com.san.guru.socialmedia.SocialMediaHandlerFactory;
 import com.san.guru.util.DateTimeUtils;
 import com.san.guru.util.Dialog;
+import com.san.guru.util.FileUtil;
+import com.san.guru.util.Formatter;
 import com.san.guru.util.ICallback;
 import com.san.guru.util.ResourceUtils;
 
 public class ResultActivity extends AbstractActivity {
 
-	private static final String STRING_FORMAT_PERCENT = "<b>Result</b><br><br> <font color='#254117'><b>%s %%</b> <br><small>%s out of %s</small>";
+	private static final String STRING_FORMAT_PERCENT = "Result \n<b>%s%% \n %s out of %s";
 
-	private static final String STRING_FORMAT_PACE = "<b>Pace</b><br><br> <font color='#254117' ><b>%s Q/Min</b> <br><small>Time:%s</small>";
+	private static final String STRING_FORMAT_PACE = "Pace \n <b>%s Q/Min \n Time: %s";
 
 	private TestResult result = new TestResult();
 	
 	int maxChars = 0;
+	
+	private Mode mode = null;
 	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -133,6 +148,32 @@ public class ResultActivity extends AbstractActivity {
 		tableLayout.addView(tableRow);
 	}
 
+	protected void setHeightOfMainArea () {
+		int height = 0;
+		
+		DisplayMetrics dimension = new DisplayMetrics();
+		
+		ScrollView sView = (ScrollView) findViewById(R.id.ScrollView);
+		
+		View gView1 = (View) findViewById(R.id.grid_1);
+		View gView2 = (View) findViewById(R.id.grid_2);
+		View gView3 = (View) findViewById(R.id.grid_3);
+		
+		TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 65, getResources().getDisplayMetrics());
+
+		getWindowManager().getDefaultDisplay().getMetrics(dimension);
+		height = dimension.heightPixels;
+		
+		LayoutParams layoutParams = gView2.getLayoutParams();
+		
+		layoutParams.height = height - (gView3.getLayoutParams().height
+									    + gView1.getLayoutParams().height 
+									    + (int) (height * 0.15));
+		
+		sView.getLayoutParams().height = layoutParams.height;
+		layoutParams.width = android.widget.GridLayout.LayoutParams.MATCH_PARENT;
+	}
+	
 	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle bundle) {
@@ -140,11 +181,6 @@ public class ResultActivity extends AbstractActivity {
 
 		IntentData intentData = null;
 
-		if (android.os.Build.VERSION.SDK_INT > 9) {
-		      StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-		      StrictMode.setThreadPolicy(policy);
-		}
-		
 		String totalTime = "00:00:00";
 
 		setContentView(R.layout.layout_result);
@@ -155,11 +191,15 @@ public class ResultActivity extends AbstractActivity {
 
 			if (intentData != null) {
 				result = (TestResult) intentData.getValue(INTENT_RESULT);
+				mode = (Mode) intentData.getValue(MODE);
+				
 				totalTime = DateTimeUtils.getTimeString(result
 						.getTotalTimeinSeconds());
 			}
 		}
-
+		// Set hight of main area.		
+		setHeightOfMainArea();
+		
 		DisplayMetrics dimension = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(dimension);
 		int height = dimension.heightPixels;
@@ -171,44 +211,50 @@ public class ResultActivity extends AbstractActivity {
 		LayoutParams layoutParams = view.getLayoutParams();
 		LayoutParams layoutParams1 = view1.getLayoutParams();
 
-		layoutParams.height = height - (int) (height * 0.85);
-		layoutParams.width = width - (int) (width * 0.60);
-
-		layoutParams1.height = height - (int) (height * 0.85);
-		layoutParams1.width = width - (int) (width * 0.60);
-
-		view.setText(Html.fromHtml(String.format(STRING_FORMAT_PERCENT,
+		view.setText(Formatter.formatPercent(String.format(STRING_FORMAT_PERCENT,
 				result.getPercentStr(), result.getTotalCorrect(),
 				result.getTotalQuestions())));
-		view1.setText(Html.fromHtml(String.format(STRING_FORMAT_PACE,
+		view1.setText(Formatter.formatPace(String.format(STRING_FORMAT_PACE,
 				result.getPace(), totalTime)));
 		
+		layoutParams.width = width - (int) (width * 0.60);
+		layoutParams1.width = width - (int) (width * 0.60);
+		layoutParams1.height = layoutParams.height;
+
 		ImageButton facebook = (ImageButton) findViewById(R.id.imgBFacebook);
 		ImageButton linkedIn = (ImageButton) findViewById(R.id.imgBLinkedIn);
 		
-		LinearLayout smLinearLayout = (LinearLayout) findViewById(R.id.smLinearLayout);
-		View grid2 = (View) findViewById(R.id.grid_2);
+		View grid3 = (View) findViewById(R.id.grid_3);
+		View grid1 = (View) findViewById(R.id.grid_1);
 		
-		int smLayoutHeight = smLinearLayout.getLayoutParams().height;
-		
-		
-		TableLayout tableLayout = (TableLayout) findViewById(R.id.subjectTable);
-		LayoutParams tableLayoutParams = tableLayout.getLayoutParams();
-		tableLayoutParams.height = height - (smLayoutHeight+ grid2.getLayoutParams().height+layoutParams.height + (int) (height * 0.35));
+		ScrollView scrollView = (ScrollView) findViewById(R.id.qScrollView);
+		View txtViews = (View) findViewById(R.id.subjectTable);
 		
 		drawSubjectChart();
-
-		final Button quitTestButton = (Button) findViewById(R.id.butQuitTest);
+		
+		txtViews.getLayoutParams().height = height - (grid1.getLayoutParams().height
+				+ grid3.getLayoutParams().height
+				+ layoutParams.height
+				+ facebook.getLayoutParams().height
+				+ (int) (height * 0.45));
+		
+		scrollView.getLayoutParams().height = height - (grid1.getLayoutParams().height
+				+ grid3.getLayoutParams().height
+				+ layoutParams.height
+				+ facebook.getLayoutParams().height
+				+ (int) (height * 0.45));
+		
+		final Button saveTestButton   = (Button) findViewById(R.id.butSaveTest);
 		final Button reviewTestButton = (Button) findViewById(R.id.butReview);
-		final Button feedbackButton = (Button) findViewById(R.id.butFeedback);
+		final Button feedbackButton   = (Button) findViewById(R.id.butFeedback);
 		
 		feedbackButton.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
 				feedbackButton.setBackgroundColor(Color.parseColor(com.san.guru.constant.Color.STEEL_BLUE));
-				reviewTestButton.setBackgroundColor(Color.parseColor(com.san.guru.constant.Color.GRAY));
-				quitTestButton.setBackgroundColor(Color.parseColor(com.san.guru.constant.Color.GRAY));
+				reviewTestButton.setBackgroundColor(Color.parseColor(com.san.guru.constant.Color.BLACK));
+				saveTestButton.setBackgroundColor(Color.parseColor(com.san.guru.constant.Color.BLACK));
 				
 				Intent email = new Intent(Intent.ACTION_SEND);
 				email.putExtra(Intent.EXTRA_EMAIL, new String[]{"gadkari.santosh@gmail.com"});		  
@@ -229,7 +275,8 @@ public class ResultActivity extends AbstractActivity {
 											result.getTotalCorrect(),
 											result.getTotalQuestions()));
 				
-				bundle.putString(SM_CAPTION, getSubjects(result));
+				bundle.putString(SM_CAPTION, result.getTestType().name());
+				bundle.putString(SM_DESC, getSubjects(result));
 				
 				if (!ResourceUtils.isNetworkAvailable(ResultActivity.this)) {
 					Toast.makeText(ResultActivity.this, "Check your Internet connection.", 100).show();
@@ -249,26 +296,46 @@ public class ResultActivity extends AbstractActivity {
 			
 			@Override
 			public void onClick(View v) {
-				Bundle bundle = new Bundle();
+				final Bundle bundle = new Bundle();
 				bundle.putString(SM_TITLE, String.format("I Got %s %%(%s Out Of %s)", 
 											result.getPercentStr(),
 											result.getTotalCorrect(),
 											result.getTotalQuestions()));
 				
 				bundle.putString(SM_CAPTION, getSubjects(result));
-				bundle.putString(LINKEDIN_POST, "Tested my skills with JavaQ");
+				bundle.putString(SM_DESC, getSubjects(result));
 				
 				if (!ResourceUtils.isNetworkAvailable(ResultActivity.this)) {
 					Toast.makeText(ResultActivity.this, "Check your Internet connection.", 100).show();
 					return;
 				}
 				
-				//get selected items
-				Toast.makeText(ResultActivity.this, SOCIAL_MEDIA_LN, Toast.LENGTH_SHORT).show();
-				
-				ISocialMediaHandler socialMediaHandler = SocialMediaHandlerFactory.getInstance().getSocialMediaHandler(SOCIAL_MEDIA_LN);
-				socialMediaHandler.init(ResultActivity.this);
-				socialMediaHandler.post(ResultActivity.this, bundle);
+				AlertDialog.Builder alert = new AlertDialog.Builder(ResultActivity.this);  
+
+		        alert.setTitle("LinkedIn");  
+		        alert.setMessage("Post");  
+		        alert.setIcon(getResources().getDrawable(R.drawable.ic_linkedin));
+
+		        // Set an EditText view to get user input   
+		        final EditText inputName = new EditText(ResultActivity.this);  
+		        alert.setView(inputName);  
+
+		        alert.setPositiveButton("Post Comments.", new DialogInterface.OnClickListener() {  
+		        public void onClick(DialogInterface dialog, int whichButton) {  
+		        	bundle.putString(LINKEDIN_POST, inputName.getText().toString());
+		        	
+		        	//get selected items
+					Toast.makeText(ResultActivity.this, SOCIAL_MEDIA_LN, Toast.LENGTH_SHORT).show();
+					
+					ISocialMediaHandler socialMediaHandler = SocialMediaHandlerFactory.getInstance().getSocialMediaHandler(SOCIAL_MEDIA_LN);
+					socialMediaHandler.init(ResultActivity.this);
+					socialMediaHandler.post(ResultActivity.this, bundle);
+		          }  
+		        }); 
+		        
+		        alert.show();
+		        
+				//bundle.putString(LINKEDIN_POST, linkedinpost);
 			}
 		});
 		        
@@ -276,9 +343,9 @@ public class ResultActivity extends AbstractActivity {
 			
 			@Override
 			public void onClick(View v) {
-				feedbackButton.setBackgroundColor(Color.parseColor(com.san.guru.constant.Color.GRAY));
+				feedbackButton.setBackgroundColor(Color.parseColor(com.san.guru.constant.Color.BLACK));
 				reviewTestButton.setBackgroundColor(Color.parseColor(com.san.guru.constant.Color.STEEL_BLUE));
-				quitTestButton.setBackgroundColor(Color.parseColor(com.san.guru.constant.Color.GRAY));
+				saveTestButton.setBackgroundColor(Color.parseColor(com.san.guru.constant.Color.BLACK));
 				
 				Intent backIntent = new Intent(ResultActivity.this, QuestionActivity.class);
 				IntentData intentData = (IntentData) intent.getExtras().get(INTENT_DATA);
@@ -291,48 +358,68 @@ public class ResultActivity extends AbstractActivity {
 			}
 		});
 		
-		quitTestButton.setOnClickListener(new OnClickListener() {
+		saveTestButton.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 				
-				feedbackButton.setBackgroundColor(Color.parseColor(com.san.guru.constant.Color.GRAY));
-				reviewTestButton.setBackgroundColor(Color.parseColor(com.san.guru.constant.Color.GRAY));
-				quitTestButton.setBackgroundColor(Color.parseColor(com.san.guru.constant.Color.STEEL_BLUE));
-
-				AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-						v.getContext());
-
-				// set title
-				alertDialogBuilder.setTitle("Exit");
-
-				// set dialog message
-				alertDialogBuilder
-						.setMessage("Do you really want to exit?")
-						.setCancelable(false)
-						.setNegativeButton("No",
-								new DialogInterface.OnClickListener() {
-									public void onClick(DialogInterface dialog,
-											int id) {
-										// Do nothing.
-									}
-								})
-						.setPositiveButton("Yes",
-								new DialogInterface.OnClickListener() {
-									public void onClick(DialogInterface dialog,
-											int id) {
-										// if this button is clicked, close
-										// current activity
-										finish();
-									}
-								});
-				AlertDialog alertDialog = alertDialogBuilder.create();
-				alertDialog.show();
+				feedbackButton.setBackgroundColor(Color.parseColor(com.san.guru.constant.Color.BLACK));
+				reviewTestButton.setBackgroundColor(Color.parseColor(com.san.guru.constant.Color.BLACK));
+				saveTestButton.setBackgroundColor(Color.parseColor(com.san.guru.constant.Color.STEEL_BLUE));
+				
+				if (!FileUtil.exists(ResultActivity.this, ResourceUtils.getString(ResultActivity.this, R.string.result_file))) {
+			        Gson gson = new Gson();
+					List<TestResult> results = new ArrayList<TestResult>();
+					results.add(ResultActivity.this.result);
+					FileUtil.saveFileInPhone(ResultActivity.this, 
+							ResourceUtils.getString(ResultActivity.this, R.string.result_file), 
+							gson.toJson(results));
+				} else {
+					String content = FileUtil.getFile(ResultActivity.this, ResourceUtils.getString(ResultActivity.this, R.string.result_file));
+					Type listOfTestObject = new TypeToken<List<TestResult>>(){}.getType();
+			        Gson gson = new Gson();
+					List<TestResult> results = gson.fromJson(content, listOfTestObject);
+					results.add(ResultActivity.this.result);
+					ResultActivity.this.result.setDate(new Date());
+					
+					FileUtil.saveFileInPhone(ResultActivity.this, 
+							ResourceUtils.getString(ResultActivity.this, R.string.result_file), 
+							gson.toJson(results));
+				}
+				
+				Toast.makeText(ResultActivity.this, "Saved Result", 100).show();
 			}
 		});
+		
+		if (mode == Mode.RESULT_DISPLAY) {
+			grid3.setEnabled(false);
+			grid3.setVisibility(GridLayout.INVISIBLE);
+		} else {
+			grid3.setEnabled(true);
+			grid3.setVisibility(GridLayout.VISIBLE);
+		}
+		
+		
+		ActionBar ab = getActionBar(); 
+		ab.setTitle(String.format("%s [%s]","Result", result.getTestType().name()));
+		
+		setAd();
 	}
 	
 	private String getSubjects(TestResult result) {
+		StringBuffer subjectNames = new StringBuffer();
+		
+		for (SubjectResult sr : result.getSubjectResult()) {
+			if (sr.getName().startsWith("Domain"))
+				subjectNames.append( sr.getName().replace("Domain", "") ).append(".");
+			else
+				subjectNames.append( sr.getName() ).append(".");
+		}
+		
+		return subjectNames.toString();
+	}
+	
+	private String getLinkedInSubjects(TestResult result) {
 		StringBuffer subjectNames = new StringBuffer();
 		
 		for (SubjectResult sr : result.getSubjectResult()) {

@@ -8,7 +8,7 @@
     
     <item
         android:id="@+id/action_quit"
-        android:icon="@drawable/ic_action_about"
+        android:icon="@drawable/ic_action_exit"
         android:showAsAction="ifRoom"
         android:title="Quit"/>
 

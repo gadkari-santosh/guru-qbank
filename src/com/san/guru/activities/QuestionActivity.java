@@ -14,9 +14,12 @@
  */
 package com.san.guru.activities;
 
-import static com.san.guru.constant.AppConstants.*;
+import static com.san.guru.constant.AppConstants.DEFAULT_QUESTION_SET_SIZE;
+import static com.san.guru.constant.AppConstants.INTENT_DATA;
+import static com.san.guru.constant.AppConstants.INTENT_NUM_QUESTION;
 import static com.san.guru.constant.AppConstants.INTENT_RESULT;
 import static com.san.guru.constant.AppConstants.INTENT_SKILL_SET;
+import static com.san.guru.constant.AppConstants.INTENT_TEST_TYPE;
 import static com.san.guru.constant.AppConstants.MODE;
 
 import java.util.ArrayList;
@@ -29,20 +32,25 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.text.SpannableString;
-import android.text.style.TypefaceSpan;
+import android.os.CountDownTimer;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RadioGroup.OnCheckedChangeListener;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.san.guru.R;
 import com.san.guru.constant.Mode;
+import com.san.guru.constant.TEST_TYPE;
 import com.san.guru.dto.IntentData;
 import com.san.guru.dto.Option;
 import com.san.guru.dto.Question;
@@ -52,7 +60,9 @@ import com.san.guru.model.QuestionBank;
 import com.san.guru.model.Subject;
 import com.san.guru.util.BackgroundTask;
 import com.san.guru.util.Dialog;
+import com.san.guru.util.Formatter;
 import com.san.guru.util.ICallback;
+import com.san.guru.util.ResourceUtils;
 import com.san.guru.widget.SanClock;
 
 /**
@@ -64,11 +74,22 @@ import com.san.guru.widget.SanClock;
 public class QuestionActivity extends AbstractActivity {
 
 	final QuestionBank qBank = QuestionBank.getNewInstance(this);
-	final SanClock sanClock = new SanClock();
+	
+	SanClock sanClock = new SanClock();
 	
 	final Stack<Question> lastQuestion = new Stack<Question>();
 	
 	private Mode mode;
+	
+	private TEST_TYPE testType = null;
+	
+	private CountDownTimer countDownTimer = null; 
+	
+	private CountDownTimer timedTestTimer = null;
+
+	private String WRONG_ANSWER_FORMAT = "Wrong Answer \nCorrect Answer : %s \nExplaination: %s";
+	
+	private String CORRECT_ANSWER_FORMAT = "Correct \nExplaination:%s";
 	
 	@SuppressLint("ResourceAsColor")
 	@Override
@@ -77,16 +98,80 @@ public class QuestionActivity extends AbstractActivity {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.layout_question);
-
+		
 		// initialize question bank with subjects selected from
 		// previous screen and display first question.
 		initQuestionBankAndDisplayFirstQuestion();
+		
+		startTimers();
 		
 		// Load bottom buttons.
 		loadButtons();
 		
 		// Adjust height of middle main area.
 		setHeightOfMainArea();
+	}
+	
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		
+		if (countDownTimer != null)
+			countDownTimer.cancel();
+		
+		if (timedTestTimer != null)
+			timedTestTimer.cancel();
+	}
+	
+	@Override
+	protected void onStop() {
+		super.onStop();
+		
+		if (countDownTimer != null)
+			countDownTimer.cancel();
+		
+		if (timedTestTimer != null)
+			timedTestTimer.cancel();
+	}
+	
+	
+	private void startTimers() {
+
+		if (testType != null) {
+			switch (testType) {
+			
+				case Timed:
+					
+					Intent intent = getIntent();
+					IntentData data = (IntentData) intent.getExtras().get(INTENT_DATA);
+					final int numQuestions = (Integer) data.getValue(INTENT_NUM_QUESTION, DEFAULT_QUESTION_SET_SIZE);
+					
+					int timeout = numQuestions * 10;
+					
+					TextView txtTimer = (TextView) findViewById(R.id.txtTimer);
+					sanClock = new SanClock(timeout, txtTimer);
+					sanClock.start();
+					
+					timedTestTimer = new CountDownTimer(timeout*1000, (timeout*1000)/5) {
+						
+						@Override
+						public void onTick(long millisUntilFinished) {
+							Toast.makeText(QuestionActivity.this, "Minutes remaining: " + millisUntilFinished / 60000, 100).show();
+						}
+						
+						@Override
+						public void onFinish() {
+							timedTestTimer.cancel();
+							sanClock.stop();
+							
+							Toast.makeText(QuestionActivity.this, "Time Expire", 100).show();
+							
+							loadEndTest();
+						}
+					};
+					timedTestTimer.start();
+			}
+		}
 	}
 	
 	@Override
@@ -102,7 +187,7 @@ public class QuestionActivity extends AbstractActivity {
 		
 		sanClock.setTextView(txtTimer);
 		
-		if (mode == Mode.TEST)
+		if (mode == Mode.TEST && testType == TEST_TYPE.Practice)
 			sanClock.start();
 	}
 	
@@ -112,10 +197,11 @@ public class QuestionActivity extends AbstractActivity {
 		IntentData data = (IntentData) intent.getExtras().get(INTENT_DATA);
 		
 		final Set skillSet = (Set) data.getValue(INTENT_SKILL_SET);
+		this.testType = (TEST_TYPE) data.getValue(INTENT_TEST_TYPE);
 		
 		mode = (Mode) data.getValue(MODE);
 		
-		final int numQuestions = (Integer) data.getValue(INTENT_NUM_QUESTION, 0);
+		final int numQuestions = (Integer) data.getValue(INTENT_NUM_QUESTION, DEFAULT_QUESTION_SET_SIZE);
 		
 		final ProgressDialog progressBar = new ProgressDialog(this);
 		progressBar.setCancelable(true);
@@ -154,12 +240,14 @@ public class QuestionActivity extends AbstractActivity {
 		
 		final Button buttonNext  = (Button) findViewById(R.id.NextQuestion);
 		final Button buttonBack  = (Button) findViewById(R.id.PrevQuestion);
-		final Button buttonPause = (Button) findViewById(R.id.PauseTest);
+		final Button buttonSkipOrAnswer  = (Button) findViewById(R.id.PauseTest);
 		final Button buttonEnd   = (Button) findViewById(R.id.EndTest);
 		
-		//showAnswer
-		buttonPause.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.drawable.ic_action_accept), null, null);
-		buttonPause.setText("ANSWER");
+		if (testType == TEST_TYPE.Practice) {
+			//showAnswer
+			buttonSkipOrAnswer.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.drawable.ic_action_accept), null, null);
+			buttonSkipOrAnswer.setText("ANSWER");
+		}
 		
 		final RadioGroup radioGroup = (RadioGroup) findViewById(R.id.option);
 		
@@ -169,9 +257,12 @@ public class QuestionActivity extends AbstractActivity {
 			@Override
 			public void onClick(View v) {
 				buttonNext.setBackgroundColor(Color.parseColor(com.san.guru.constant.Color.STEEL_BLUE));
-				buttonBack.setBackgroundColor(Color.parseColor(com.san.guru.constant.Color.GRAY));
-				buttonPause.setBackgroundColor(Color.parseColor(com.san.guru.constant.Color.GRAY));
-				buttonEnd.setBackgroundColor(Color.parseColor(com.san.guru.constant.Color.GRAY));
+				buttonBack.setBackgroundColor(Color.parseColor(com.san.guru.constant.Color.BLACK));
+				buttonSkipOrAnswer.setBackgroundColor(Color.parseColor(com.san.guru.constant.Color.BLACK));
+				buttonEnd.setBackgroundColor(Color.parseColor(com.san.guru.constant.Color.BLACK));
+				
+				if (countDownTimer != null)
+					countDownTimer.cancel();
 				
 				if (mode == Mode.REVIEW) {
 					Question question = qBank.nextQuestion();
@@ -185,17 +276,32 @@ public class QuestionActivity extends AbstractActivity {
 					return;
 				}
 				
+				
 				if (radioGroup != null && mode == Mode.TEST) {
 
-					RadioButton radioButton = (RadioButton) findViewById(radioGroup.getCheckedRadioButtonId());
-					
-					if (radioButton == null) {
-						Toast toast = Toast.makeText(v.getContext(), "Select Option", 50);
-						toast.show();
-						return;
-					}
 					Question lQ = lastQuestion.pop();
-					lQ.setUserAnswer(String.valueOf(radioButton.getText()));
+					
+					if (lQ.isMultipleChoice()) {
+						final LinearLayout cbLayout = (LinearLayout) findViewById(R.id.layoutCheckBox);
+						for (int i=0; i<cbLayout.getChildCount(); i++) {
+							CheckBox checkBox = (CheckBox) cbLayout.getChildAt(i);
+							
+							if (checkBox.isChecked()) {
+								lQ.setUserAnswer(checkBox.getId());
+							}
+						}
+					} else {
+						RadioButton radioButton = (RadioButton) findViewById(radioGroup.getCheckedRadioButtonId());
+						
+						if (radioButton == null && testType == TEST_TYPE.Timed) {
+							Toast toast = Toast.makeText(v.getContext(), "Select Option", 50);
+							toast.show();
+							return;
+						}
+						
+						if (radioButton != null)
+							lQ.setUserAnswer(radioButton.getId());
+					}
 					
 					Question question = qBank.nextQuestion();
 					if (question != null) {
@@ -217,11 +323,15 @@ public class QuestionActivity extends AbstractActivity {
 
 			@Override
 			public void onClick(View v) {
-				buttonNext.setBackgroundColor(Color.parseColor(com.san.guru.constant.Color.GRAY));
+				
+				if (countDownTimer != null)
+					countDownTimer.cancel();
+				
+				buttonNext.setBackgroundColor(Color.parseColor(com.san.guru.constant.Color.BLACK));
 				
 				buttonBack.setBackgroundColor(Color.parseColor(com.san.guru.constant.Color.STEEL_BLUE));
-				buttonPause.setBackgroundColor(Color.parseColor(com.san.guru.constant.Color.GRAY));
-				buttonEnd.setBackgroundColor(Color.parseColor(com.san.guru.constant.Color.GRAY));
+				buttonSkipOrAnswer.setBackgroundColor(Color.parseColor(com.san.guru.constant.Color.BLACK));
+				buttonEnd.setBackgroundColor(Color.parseColor(com.san.guru.constant.Color.BLACK));
 				
 				if (mode == Mode.REVIEW) {
 					Question question = qBank.backQuestion();
@@ -235,14 +345,25 @@ public class QuestionActivity extends AbstractActivity {
 					return;
 				}
 				
-				if (radioGroup != null && mode == Mode.TEST) {
-					RadioButton radioButton = (RadioButton) findViewById(radioGroup.getCheckedRadioButtonId());
+				if (mode == Mode.TEST) {
 					
 					Question lastQ = null;
 					if (!lastQuestion.isEmpty()) {
 						lastQ = lastQuestion.pop();
-						if (radioButton != null)
-							lastQ.setUserAnswer(String.valueOf(radioButton.getText()));
+						
+						if (!lastQ.isMultipleChoice()) {
+							RadioButton radioButton = (RadioButton) findViewById(radioGroup.getCheckedRadioButtonId());
+							lastQ.setUserAnswer(radioButton.getId());
+						} else {
+							final LinearLayout cbLayout = (LinearLayout) findViewById(R.id.layoutCheckBox);
+							for (int i=0; i<cbLayout.getChildCount(); i++) {
+								CheckBox checkBox = (CheckBox) cbLayout.getChildAt(i);
+								
+								if (checkBox.isChecked()) {
+									lastQ.setUserAnswer(checkBox.getId());
+								}
+							}
+						}
 					}
 					
 					Question question = qBank.backQuestion();
@@ -259,7 +380,7 @@ public class QuestionActivity extends AbstractActivity {
 		});
 		
 		// Load pause button.
-		buttonPause.setOnClickListener(new OnClickListener() {
+		buttonSkipOrAnswer.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
@@ -270,14 +391,56 @@ public class QuestionActivity extends AbstractActivity {
 					return;
 				}
 				
-				buttonNext.setBackgroundColor(Color.parseColor(com.san.guru.constant.Color.GRAY));
+				if (countDownTimer != null)
+					countDownTimer.cancel();
 				
-				buttonBack.setBackgroundColor(Color.parseColor(com.san.guru.constant.Color.GRAY));
-				buttonPause.setBackgroundColor(Color.parseColor(com.san.guru.constant.Color.STEEL_BLUE));
-				buttonEnd.setBackgroundColor(Color.parseColor(com.san.guru.constant.Color.GRAY));
+				TextView txtExplain = (TextView) findViewById(R.id.txtExplain);
+				if (testType == TEST_TYPE.Practice) {
+					Question lQ = lastQuestion.peek();
+					
+					if (!lQ.isMultipleChoice()) {
+						RadioButton radioButton = (RadioButton) findViewById(radioGroup.getCheckedRadioButtonId());
+						
+						if (radioButton == null && testType == TEST_TYPE.Timed) {
+							Toast toast = Toast.makeText(v.getContext(), "Select Option", 50);
+							toast.show();
+							return;
+						}
+						
+						if (radioButton != null)
+							lQ.setUserAnswer(radioButton.getId());
+					}
+					
+					if (lQ.isCorrect()) {
+						txtExplain.setText(String.format(CORRECT_ANSWER_FORMAT, 
+								Formatter.formatDescription(lQ.getExplaination())));
+					} else {
+						txtExplain.setText(String.format(WRONG_ANSWER_FORMAT, 
+								lQ.getAnswers().toString(), 
+								Formatter.formatDescription(lQ.getExplaination())));	
+					}
+					
+					txtExplain.setEnabled(true);
+					txtExplain.setVisibility(TextView.VISIBLE);
+					
+					final ScrollView sv = (ScrollView) findViewById(R.id.qScrollView);
+					sv.post(new Runnable() { 
+				        public void run() { 
+				        	sv.scrollTo(0, sv.getBottom());
+				        } 
+					});
+					
+					return;
+				}
+				
+				buttonNext.setBackgroundColor(Color.parseColor(com.san.guru.constant.Color.BLACK));
+				
+				buttonBack.setBackgroundColor(Color.parseColor(com.san.guru.constant.Color.BLACK));
+				buttonSkipOrAnswer.setBackgroundColor(Color.parseColor(com.san.guru.constant.Color.STEEL_BLUE));
+				buttonEnd.setBackgroundColor(Color.parseColor(com.san.guru.constant.Color.BLACK));
 				
 				Question lQ = lastQuestion.pop();
-				lQ.setUserAnswer(null);
+//				lQ.setUserAnswer(null);
 				
 				Question question = qBank.nextQuestion();
 				lastQuestion.push(question);
@@ -294,10 +457,17 @@ public class QuestionActivity extends AbstractActivity {
 
 			@Override
 			public void onClick(final View v) {
-				buttonNext.setBackgroundColor(Color.parseColor(com.san.guru.constant.Color.GRAY));
 				
-				buttonBack.setBackgroundColor(Color.parseColor(com.san.guru.constant.Color.GRAY));
-				buttonPause.setBackgroundColor(Color.parseColor(com.san.guru.constant.Color.GRAY));
+				if (countDownTimer != null)
+					countDownTimer.cancel();
+				
+				if (timedTestTimer != null)
+					timedTestTimer.cancel();
+				
+				buttonNext.setBackgroundColor(Color.parseColor(com.san.guru.constant.Color.BLACK));
+				
+				buttonBack.setBackgroundColor(Color.parseColor(com.san.guru.constant.Color.BLACK));
+				buttonSkipOrAnswer.setBackgroundColor(Color.parseColor(com.san.guru.constant.Color.BLACK));
 				buttonEnd.setBackgroundColor(Color.parseColor(com.san.guru.constant.Color.STEEL_BLUE));
 				
 				Dialog.show(v.getContext(), "Are you sure?", "End Test", new ICallback() {
@@ -315,14 +485,14 @@ public class QuestionActivity extends AbstractActivity {
 			
 			@Override
 			public void onClick(View v) {
-				buttonNext.setBackgroundColor(Color.parseColor(com.san.guru.constant.Color.GRAY));
+				buttonNext.setBackgroundColor(Color.parseColor(com.san.guru.constant.Color.BLACK));
 				
-				buttonBack.setBackgroundColor(Color.parseColor(com.san.guru.constant.Color.GRAY));
-				buttonPause.setBackgroundColor(Color.parseColor(com.san.guru.constant.Color.GRAY));
-				buttonEnd.setBackgroundColor(Color.parseColor(com.san.guru.constant.Color.GRAY));
-				
+				buttonBack.setBackgroundColor(Color.parseColor(com.san.guru.constant.Color.BLACK));
+				buttonSkipOrAnswer.setBackgroundColor(Color.parseColor(com.san.guru.constant.Color.BLACK));
+				buttonEnd.setBackgroundColor(Color.parseColor(com.san.guru.constant.Color.BLACK));
 			}
 		});
+		
 	}
 
 	private void loadEndTest() {
@@ -341,6 +511,8 @@ public class QuestionActivity extends AbstractActivity {
 		sanClock.stop();
 		
 		TestResult result = new TestResult();
+		if (testType != null)
+			result.setTestType(testType);
 		result.setTotalTimeinSeconds(sanClock.getElaspedTime());
 		result.setTotalCorrect(qBank.getNumCorrrect());
 		result.setTotalWrong(qBank.getNumWrong());
@@ -385,8 +557,12 @@ public class QuestionActivity extends AbstractActivity {
 	private void loadQuestionOnScreen(Question question) {
 		
 		final RadioGroup radioGroup = (RadioGroup) findViewById(R.id.option);
-
+		final LinearLayout layout = (LinearLayout) findViewById(R.id.layoutQuestion);
+		final LinearLayout cbLayout = (LinearLayout) findViewById(R.id.layoutCheckBox);
+		
 		radioGroup.removeAllViews();
+		
+		cbLayout.removeAllViews();
 		
 		TextView txtQCount = (TextView) findViewById(R.id.txtQCount);
 		txtQCount.setText("Questions : " + (qBank.getSequence()+1) +"/" + qBank.getMaxQuestions());
@@ -395,40 +571,78 @@ public class QuestionActivity extends AbstractActivity {
 		TextView txtQuestion = (TextView) findViewById(R.id.txtQuestion);
 		
 		String q = question.getDescription();
-		q = question.getId() + ":" + q; //TODO - remove after work.
-		int startIdx = q.indexOf("<code>");
-		int endIdx = q.indexOf("</code>");
-		
-		q = q.replace("<code>", "");
-		q = q.replace("</code>", "");
-		
-		SpannableString text = new SpannableString(q);
-		text.setSpan(new TypefaceSpan("monospace"), startIdx, endIdx, 0);
-		
-		txtQuestion.setText(text);
+		txtQuestion.setText(Formatter.formatDescription(q));
 		
 		for (Option option : question.getOptions()) {
-			RadioButton b = new RadioButton(this);
-			b.setTextColor(Color.BLACK);
-			b.setText(option.getText());
 			
-			if (mode == Mode.REVIEW) {
-				b.setEnabled(false);
-			} else if (mode == Mode.TEST) {
-				b.setEnabled(true);
-			}
-			
-			b.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					buttonNext.setBackgroundColor(Color.parseColor(com.san.guru.constant.Color.GRAY));
+			if (question.isMultipleChoice()) {
+				
+				CheckBox b = new CheckBox(this);
+				
+				b.setText(option.getId()+") "+option.getText()+"\n");
+				b.setId(option.getId());
+				b.setGravity(Gravity.TOP);
+				b.setTextColor(ResourceUtils.getColor(this, R.color.AppColor));
+				b.setTextSize(14);
+				
+				if (mode == Mode.REVIEW) {
+					b.setEnabled(false);
+				} else if (mode == Mode.TEST) {
+					b.setEnabled(true);
 				}
-			});
+				
+				b.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						Question lQ = lastQuestion.peek();
+						
+						if (lQ != null) {
+							CheckBox checkBox = (CheckBox) v;
+							if (checkBox.isChecked()) {
+								lQ.setUserAnswer(checkBox.getId());
+							} else {
+								lQ.cancelUserAnswer(checkBox.getId());
+							}
+						}
+						buttonNext.setBackgroundColor(Color.parseColor(com.san.guru.constant.Color.BLACK));
+					}
+				});
+				
+				if (question.getUserAnswers().contains(b.getId())) {
+					b.setChecked(true);
+				}
+				cbLayout.addView(b);
+				
+			} else {
+				
+				final RadioButton b = new RadioButton(this);
+				b.setTextColor(Color.BLACK);
+				b.setText(option.getId()+") "+option.getText()+"\n");
+				b.setId(option.getId());
+				b.setGravity(Gravity.TOP);
+				b.setTextColor(ResourceUtils.getColor(this, R.color.AppColor));
+				b.setTextSize(14);
+				
+				if (mode == Mode.REVIEW) {
+					b.setEnabled(false);
+				} else if (mode == Mode.TEST) {
+					b.setEnabled(true);
+				}
+				
+				b.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						buttonNext.setBackgroundColor(Color.parseColor(com.san.guru.constant.Color.BLACK));
+					}
+				});
 			
-			radioGroup.addView(b);
-			
-			if (b.getText().equals(question.getUserAnswer())) {
-				radioGroup.check(b.getId());
+				
+				if (question.getUserAnswers().contains(b.getId())) {
+					b.setChecked(true);
+					b.setSelected(true);
+				}
+				
+				radioGroup.addView(b);
 			}
 		}
 		TextView txtExplain = (TextView) findViewById(R.id.txtExplain);
@@ -437,15 +651,40 @@ public class QuestionActivity extends AbstractActivity {
 			txtExplain.setVisibility(TextView.VISIBLE);
 			
 			if (question.isCorrect()) {
-				txtExplain.setText("Correct");
-				txtExplain.setTextColor(Color.parseColor("#007A00"));
+				txtExplain.setText(String.format(CORRECT_ANSWER_FORMAT, 
+						Formatter.formatDescription(question.getExplaination())));
 			} else {
-				txtExplain.setText(question.getExplaination());
-				txtExplain.setTextColor(Color.parseColor("#FD2E2E"));
+				txtExplain.setText(Formatter.formatDescription(String.format(WRONG_ANSWER_FORMAT, 
+						question.getAnswers().toString(), 
+						question.getExplaination())));
 			}
 		} else {
 			txtExplain.setVisibility(TextView.INVISIBLE);
 			qBank.markAttempted(question);
+		}
+		
+		if (testType == TEST_TYPE.RapidFire) {
+			sanClock.stopStart();
+			
+			int timeout = ResourceUtils.getInt(QuestionActivity.this, R.string.rapid_fire_timeout);
+			countDownTimer = new CountDownTimer(timeout, timeout/3) {
+				
+				@Override
+				public void onTick(long millisUntilFinished) {
+					Toast.makeText(QuestionActivity.this, "seconds remaining: " + millisUntilFinished / 1000, 100).show();
+				}
+				
+				@Override
+				public void onFinish() {
+					sanClock.stop();
+					
+					Toast.makeText(QuestionActivity.this, "Time Expire", 100).show();
+					
+					 Button buttonNext  = (Button) findViewById(R.id.NextQuestion);
+					 buttonNext.performClick();
+				}
+			};
+			countDownTimer.start();
 		}
 	}
 }

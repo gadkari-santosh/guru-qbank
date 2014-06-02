@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="10dp"
+    android:background="@color/White"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/examTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#E5E4E2"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:text="DD MMM YYYY HH:MM:SS"
+        android:textColor="@color/SlateGray"
+        android:textStyle="italic" />
+
+    <LinearLayout
+        android:id="@+id/layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <Button
+            android:id="@+id/record"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="@color/White"
+            android:drawableLeft="@drawable/medal"
+            android:drawableRight="@drawable/ic_action_next_passive"
+            android:gravity="left|center_vertical"
+            android:text="  0% (0 out of 0)"
+            android:textSize="15dp"
+            android:textColor="@color/AppColor" />
+    </LinearLayout>
+
+</LinearLayout>

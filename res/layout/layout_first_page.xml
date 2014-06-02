@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- 
- 
+<!--
   Copyright (C) 2014 - 2025
  
   This software is copyrighted. The software may not be copied, reproduced, 
@@ -17,15 +16,14 @@
   Description : Splash screen.
   Author : Santosh Gadkari (gadkari.santosh@gmail.com)
   
-  Major history : 
-  
- -->
+
+-->
 <android.support.v7.widget.GridLayout xmlns:app="http://schemas.android.com/apk/res/com.san.guru"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/AliceBlue"
-    android:textColor="@color/Black"
+    android:background="@color/AppColor"
+    android:textColor="@color/AppColor"
     app:columnCount="3" >
 
     <ImageView
@@ -35,7 +33,7 @@
         app:layout_column="0"
         app:layout_gravity="center_horizontal|top"
         app:layout_row="0"
-        android:background="@color/AliceBlue"
-        android:src="@drawable/letstry" />
+        android:background="@color/AppColor"
+        android:src="@drawable/exam" />
 
 </android.support.v7.widget.GridLayout>

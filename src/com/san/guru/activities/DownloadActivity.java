@@ -11,7 +11,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -31,6 +30,7 @@ import android.widget.Button;
 import android.widget.CheckedTextView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.san.guru.R;
 import com.san.guru.model.SubjectFile;
@@ -39,9 +39,10 @@ import com.san.guru.util.Dialog;
 import com.san.guru.util.DownloadFileFromURL;
 import com.san.guru.util.FileUtil;
 import com.san.guru.util.ICallback;
+import com.san.guru.util.ResourceUtils;
 import com.san.guru.widget.MyCustomAdapter;
 
-public class DownloadActivity extends Activity  {
+public class DownloadActivity extends AbstractActivity  {
 
 	HashSet<CharSequence> checkedItems = new HashSet<CharSequence>();
 	
@@ -84,6 +85,10 @@ public class DownloadActivity extends Activity  {
 		super.onCreate(savedInstanceState);
 		
 		setContentView(R.layout.layout_download);
+		
+		if (!ResourceUtils.isNetworkAvailable(DownloadActivity.this)) {
+			Toast.makeText(DownloadActivity.this, "No network.Check your Internet connection.", 100).show();
+		}
 		
 		ProgressDialog progressBar = new ProgressDialog(this);
 		progressBar.setCancelable(true);
@@ -138,7 +143,7 @@ public class DownloadActivity extends Activity  {
 	        
 		});
 		
-		d.execute("https://raw.githubusercontent.com/gadkari-santosh/resources/master/dev/subjects.xml");
+		d.execute(ResourceUtils.getString(this, R.string.subject_url));
 		
 		Log.i("Download", "waiting..");
 		
@@ -153,7 +158,7 @@ public class DownloadActivity extends Activity  {
 								    long arg3) {
 				
 				LinearLayout childAt = (LinearLayout) arg1;
-				CheckedTextView txtView = (CheckedTextView) childAt.getChildAt(0);
+				CheckedTextView txtView = (CheckedTextView) childAt.getChildAt(1);
 				
 				if (!txtView.isChecked()) {
 					checkedItems.add(txtView.getText());
@@ -195,9 +200,10 @@ public class DownloadActivity extends Activity  {
 					}
 				});
 				
-				String partialURL = "https://raw.githubusercontent.com/gadkari-santosh/resources/master/dev/";
+				String partialURL = ResourceUtils.getString(DownloadActivity.this, R.string.question_bank_url);
 				
 				String[] urls = new String[checkedItems.size()];
+				
 				int i = 0;
 				for (CharSequence item : checkedItems) {
 					SubjectFile subjectFile2 = subjectFiles.get(item);
@@ -207,6 +213,8 @@ public class DownloadActivity extends Activity  {
 				d.execute(urls);
 			}
 		});
+		
+		setAd();
 	}
 	
 	private void setListViewHight () {

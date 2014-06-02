@@ -9,6 +9,7 @@
       android:paddingBottom="10dip" 
       android:orientation="vertical" 
       android:layout_width="fill_parent" 
+      android:textColor="@color/AppColor"
       android:layout_height="?android:attr/listPreferredItemHeight"  
       android:gravity="center_vertical"  
       android:checkMark="?android:attr/listChoiceIndicatorMultiple" 

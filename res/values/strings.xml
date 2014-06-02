@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">jQBank</string>
+    <string name="app_name">Exam</string>
+    <string name="action_bar_name"> </string>
     
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
@@ -11,25 +12,30 @@
     <string name="score"><b>Result</b>\n\n <b>98%</b> \n<small>58 out of 62</small></string>
     <string name="TEST_TYPE_PROMPT">Choose a country</string>
 
+    <string name="result_file">result.json</string>
+    <string name="profile_file">profile.json</string>
+    
     <string-array name="TEST_TYPES">
         <item>Rapid Fire</item>
         <item>Practice</item>
         <item>Timed</item>
     </string-array>
-    <string-array name="LEVEL">
-        <item>Medium</item>
-        <item>Easy</item>
-        <item>Hard</item>
-    </string-array>
-
+    
+    <string name="help_rapid_fire">Rapid fire exam expects answer for each question within 20 seconds. Exam will display next question on timed up.</string>
+    <string name="help_practice">Practice exam is useful for exploring subject. There is no time limit and you can see answer with explaination on selecting "Answer" button.</string>
+    <string name="help_Timed">Timed exam gives specific time based on number of question you select and you have to finish the exam before the time.</string>
+    
+    <string name="rapid_fire_timeout">20000</string>
+    
+    <string name="subject_url">https://raw.githubusercontent.com/gadkari-santosh/resources/master/dev/subjects.xml</string>
+    <string name="question_bank_url">https://raw.githubusercontent.com/gadkari-santosh/resources/master/dev/</string>
+    <string name="notice_url">https://raw.githubusercontent.com/gadkari-santosh/resources/master/dev/notice.txt</string>
     
     <!--  Facebook Settings -->
     <string name="fb_app_id">618285171599531</string>
-    <string name="fb_picture">https://raw.githubusercontent.com/gadkari-santosh/resources/master/images/medal.png</string>
-    <string name="fb_desc">Your test result.</string>
+    <string name="fb_picture">https://raw.githubusercontent.com/gadkari-santosh/resources/master/dev/app_icon.png</string>
     <string name="fb_link">http://www.google.com</string>
     
     <!-- linked in settings -->
-    <string name="ln_link">https://raw.githubusercontent.com/gadkari-santosh/resources/master/images/medal.png</string>
-    <string name="ln_desc">Your test result</string>
+    <string name="ln_link">https://raw.githubusercontent.com/gadkari-santosh/resources/master/dev/app_icon.png</string>
 </resources>

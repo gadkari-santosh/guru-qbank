@@ -3,122 +3,143 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-     android:background="@color/WhiteSmoke"
-     android:textColor="@color/Black"
+    android:background="@color/WhiteSmoke"
+    android:textColor="@color/Black"
     app:columnCount="3" >
 
     <android.support.v7.widget.GridLayout
         android:id="@+id/grid_1"
         android:layout_width="match_parent"
-        android:layout_height="42dp"
+        android:layout_height="24dp"
         app:layout_column="0"
         app:layout_gravity="left|top"
         app:layout_row="0"
-        android:background="@color/MidnightBlue"
+        android:background="@color/Black"
         app:columnCount="1" >
 
-        <android.support.v7.widget.GridLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="42dp"
-            app:layout_column="0"
-            app:layout_gravity="left|top"
-            app:layout_row="0"
-            android:background="@color/SteelBlue"
-            app:columnCount="1" >
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
 
             <TextView
                 android:id="@+id/txtQCount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                app:layout_column="0"
-                app:layout_gravity="left|center_vertical"
-                app:layout_row="0"
+                android:layout_weight="1.0"
+                app:layout_gravity="right|top"
                 android:text="Question 0/0"
                 android:textColor="@color/WhiteSmoke"
                 android:typeface="normal" />
 
-             <ImageView
-                 android:id="@+id/imageView1"
-                 android:layout_width="wrap_content"
-                 android:layout_height="wrap_content"
-                 android:layout_marginRight="80dp"
-                 app:layout_column="0"
-                 app:layout_gravity="right|center_vertical"
-                 app:layout_row="0"
-                 android:src="@drawable/ic_action_alarms" />
-             
+            <ImageView
+                android:id="@+id/imageView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_gravity="center|top"
+                android:src="@drawable/ic_action_alarms" />
+
             <TextView
                 android:id="@+id/txtTimer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_column="0"
-                android:layout_margin="10dp"
-                app:layout_gravity="right|center_vertical"
-                app:layout_row="0"
+                android:layout_margin="2dp"
+                android:layout_weight="0.22"
+                app:layout_gravity="left|top"
                 android:text="00:00:00"
                 android:textColor="@color/WhiteSmoke" />
-
-        </android.support.v7.widget.GridLayout>
+        </LinearLayout>
     </android.support.v7.widget.GridLayout>
 
     <android.support.v7.widget.GridLayout
         android:id="@+id/grid_2"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_column="0"
         app:layout_gravity="left|top"
-        android:color="@color/DarkBlack"
         app:layout_row="1"
-        app:columnCount="2" >
+        app:columnCount="2"
+        android:color="@color/DarkBlack" >
 
-            <ScrollView
-                android:id="@+id/qScrollView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:scrollbarStyle="outsideOverlay"
-                android:scrollbars="horizontal|vertical" >
-        
-        <LinearLayout
-            android:layout_width="wrap_content"
+        <ScrollView
+            android:id="@+id/qScrollView"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_column="0"
-            app:layout_gravity="left|top"
-            app:layout_row="0"
-            android:orientation="vertical" >
+            android:scrollbarStyle="outsideOverlay"
+            android:scrollbars="horizontal|vertical" >
 
-                <TextView
-                    android:id="@+id/txtQuestion"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:textColor="@color/DarkBlack" 
-                    android:text="" />
-        
-
-            <RadioGroup
-                android:id="@+id/option"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:button="@android:color/transparent"
-                android:layout_margin="10dp"
-                android:textColor="@color/DarkBlack"
-                android:visibility="visible" >
+                app:layout_column="0"
+                app:layout_gravity="left|top"
+                app:layout_row="0"
+                android:orientation="vertical" >
 
-            </RadioGroup>
-            
-                <TextView
-                    android:id="@+id/txtExplain"
+                <LinearLayout
+                    android:id="@+id/layoutQuestion"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="TextView"
-                    android:layout_margin="10dp"
-                    app:layout_gravity="left"
-                    android:textColor="@color/DarkBlack"
-                    android:visibility="invisible" />
+                    app:layout_column="0"
+                    app:layout_gravity="left|top"
+                    app:layout_row="0"
+                    android:textColor="@color/AppColor" 
+                    android:orientation="vertical" >
 
-        </LinearLayout>
-            </ScrollView>
+                    <TextView
+                        android:id="@+id/txtQuestion"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:text=""
+                        android:textColor="@color/AppColor" />
+
+                    <RadioGroup
+                        android:id="@+id/option"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:button="@android:color/transparent"
+                        android:textColor="@color/AppColor"
+                        android:gravity="top|top"
+                        android:visibility="visible" >
+                    </RadioGroup>
+
+                    <LinearLayout
+                        android:id="@+id/layoutCheckBox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_column="0"
+                        app:layout_gravity="left|top"
+                        android:textColor="@color/AppColor"
+                        app:layout_row="0"
+                        android:gravity="top|top"
+                        android:orientation="vertical" >
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_column="0"
+                    app:layout_gravity="left|top"
+                    app:layout_row="0"
+                    android:orientation="vertical" >
+
+                    <TextView
+                        android:id="@+id/txtExplain"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="10dp"
+                        app:layout_gravity="center|center"
+                        android:background="@drawable/shape_answer"
+                        android:text="TextView"
+                        android:textColor="@color/Black"
+                        android:textSize="15dp"
+                        android:visibility="invisible" />
+                </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
     </android.support.v7.widget.GridLayout>
 
     <android.support.v7.widget.GridLayout
@@ -131,67 +152,65 @@
         android:background="@color/Black"
         app:columnCount="1" >
 
-         <LinearLayout
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             app:layout_gravity="fill_horizontal"
-             android:background="@color/Black"
-             android:orientation="horizontal" >
-        
-       <Button
-           android:id="@+id/PrevQuestion"
-           android:layout_width="0dp"
-           android:layout_height="match_parent"
-           android:layout_weight="1"
-           app:layout_gravity="center|top"
-           android:background="@color/Black"
-           android:drawableTop="@drawable/button_prev_question"
-           android:text="BACK"
-           android:textColor="@color/button_color"
-           android:textSize="10sp"
-           android:textStyle="bold" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_gravity="fill_horizontal"
+            android:background="@color/Black"
+            android:orientation="horizontal" >
 
-        <Button
-            android:id="@+id/PauseTest"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            app:layout_gravity="center|top"
-            android:background="@color/Black"
-            android:drawableTop="@drawable/button_skip_test"
-            android:text="SKIP"
-            android:textColor="@color/button_color"
-            android:textSize="10sp"
-            android:textStyle="bold" />
-        
-        <Button
-            android:id="@+id/EndTest"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            app:layout_gravity="center|top"
-            android:background="@color/Black"
-            android:drawableTop="@drawable/button_end_test"
-            android:text="END"
-            android:textColor="@color/button_color"
-            android:textSize="10sp"
-            android:textStyle="bold" />
-	        
-        <Button
-            android:id="@+id/NextQuestion"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            app:layout_gravity="center|top"
-            android:background="@color/Black"
-            android:drawableTop="@drawable/button_next_question"
-            android:text="NEXT"
-            android:textColor="@color/button_color"
-            android:textSize="10sp"
-            android:textStyle="bold" />
-       
+            <Button
+                android:id="@+id/PrevQuestion"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                app:layout_gravity="center|top"
+                android:background="@color/Black"
+                android:drawableTop="@drawable/ic_action_previous_active"
+                android:text="BACK"
+                android:textColor="@color/button_color"
+                android:textSize="10sp"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/PauseTest"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                app:layout_gravity="center|top"
+                android:background="@color/Black"
+                android:drawableTop="@drawable/ic_action_forward"
+                android:text="SKIP"
+                android:textColor="@color/button_color"
+                android:textSize="10sp"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/EndTest"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                app:layout_gravity="center|top"
+                android:background="@color/Black"
+                android:drawableTop="@drawable/ic_action_end_test_active"
+                android:text="END"
+                android:textColor="@color/button_color"
+                android:textSize="10sp"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/NextQuestion"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                app:layout_gravity="center|top"
+                android:background="@color/Black"
+                android:drawableTop="@drawable/ic_action_next_active"
+                android:text="NEXT"
+                android:textColor="@color/button_color"
+                android:textSize="10sp"
+                android:textStyle="bold" />
         </LinearLayout>
-
     </android.support.v7.widget.GridLayout>
 
 </android.support.v7.widget.GridLayout>

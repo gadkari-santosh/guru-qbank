@@ -33,8 +33,8 @@ public class FacebookHandler implements ISocialMediaHandler {
 	@Override
 	public void post(Activity activity, Bundle params) {
 		params.putString("name", params.getString(SM_TITLE));
-		params.putString("caption", params.getString(SM_CAPTION));
-		params.putString("description", params.getString(SM_CAPTION));
+		params.putString("caption", params.getString(SM_CAPTION) + " Test Round");
+		params.putString("description", params.getString(SM_DESC));
 		params.putString("link", ResourceUtils.getString(activity, R.string.fb_link));
 		params.putString("picture", ResourceUtils.getString(activity, R.string.fb_picture));
 		
@@ -47,25 +47,22 @@ public class FacebookHandler implements ISocialMediaHandler {
 			
 			@Override
 			public void onFacebookError(FacebookError e) {
-				
+				Toast.makeText(context, "Facebook Err# Unable to post.", 100).show();
 			}
 			
 			@Override
 			public void onError(DialogError e) {
-				// TODO Auto-generated method stub
-				
+				Toast.makeText(context, "Facebook Err# Unable to post.", 100).show();
 			}
 			
 			@Override
 			public void onComplete(Bundle values) {
-				// TODO Auto-generated method stub
-				
+				Toast.makeText(context, "Your score posted on Facebook.", 100).show();
 			}
 			
 			@Override
 			public void onCancel() {
-				// TODO Auto-generated method stub
-				
+				Toast.makeText(context, "Facebook Cancel# Unable to post", 100).show();
 			}
 		});
 		

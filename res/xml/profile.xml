@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"> 
+    <PreferenceCategory 
+        android:title="Storage" 
+        android:summary="Deletes all question bank file."
+        android:key="storage"> 
+        <CheckBoxPreference 
+            android:key="deleteAllData" 
+            android:summary="Deletes all downloaded subject data from the phone"
+            android:title="Delete all Data" 
+            android:defaultValue="false" 
+        /> 
+         
+    </PreferenceCategory> 
+    <PreferenceCategory 
+        android:title="Subject Storage" 
+        android:summary="Deletes question bank file."
+        android:key="appStorage"> 
+    </PreferenceCategory> 
+</PreferenceScreen> 

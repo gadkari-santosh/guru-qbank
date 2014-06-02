@@ -16,7 +16,7 @@ package com.san.guru.activities;
 
 import static com.san.guru.constant.AppConstants.INTENT_DATA;
 import static com.san.guru.constant.AppConstants.INTENT_SKILL_SET;
-import static com.san.guru.constant.Color.GRAY;
+import static com.san.guru.constant.Color.BLACK;
 import static com.san.guru.constant.Color.STEEL_BLUE;
 
 import java.util.ArrayList;
@@ -32,6 +32,8 @@ import android.util.DisplayMetrics;
 import android.util.SparseBooleanArray;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -43,6 +45,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckedTextView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.san.guru.R;
@@ -66,21 +69,57 @@ public class ChooseSubjectActivity extends AbstractActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
-
+		
 		setContentView(R.layout.layout_choose_subject);
+		
+		TextView marqueeText=(TextView)findViewById(R.id.marquee_text);
+		marqueeText.requestFocus();
 		
 		handleDownloadButton();
 		
 		// Populate subjects on list view.
-		final ListView listViewSubjects = handleListViewSubjects(Subjects.getInstance().getSubjects());
+		final ListView listViewSubjects = handleListViewSubjects(Subjects.getInstance().getSubjectNames());
 		
 		// handle button events.
 		handleMeButton();
 		handleNextButton(listViewSubjects);
+		handleSettings();
 		
 		// After pulling hairs finally, decided to set Listview hight at runtime.
 		// Issue was, ListView used to occupy whole screen.
 		setHeightOfMainArea();
+		
+		setNotice();
+	}
+	
+	protected void setHeightOfMainArea () {
+		int height = 0;
+		
+		DisplayMetrics dimension = new DisplayMetrics();
+		
+		View listView = (View) findViewById(R.id.listViewSubjects);
+		View gView2 = (View) findViewById(R.id.grid_2);
+		View gView1 = (View) findViewById(R.id.grid_1);
+		
+		TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 65, getResources().getDisplayMetrics());
+
+		getWindowManager().getDefaultDisplay().getMetrics(dimension);
+		height = dimension.heightPixels;
+		
+		LayoutParams layoutParams = listView.getLayoutParams();
+		
+		layoutParams.height = height - (gView2.getLayoutParams().height
+									    + (int) (height * 0.29));
+		
+		gView1.getLayoutParams().width = android.widget.GridLayout.LayoutParams.FILL_PARENT;
+	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.action_bar_exit, menu);
+		return super.onCreateOptionsMenu(menu);
 	}
 	
 	@Override
@@ -95,37 +134,69 @@ public class ChooseSubjectActivity extends AbstractActivity {
 	    }
 	}
 	
-	private void handleMeButton() {
-		final Button buttonNext = (Button) findViewById(R.id.buttonNext);
+	private void handleSettings() {
+		final Button buttonSetg = (Button) findViewById(R.id.buttonSettings);
 		final Button buttonMe   = (Button) findViewById(R.id.buttonMe);
+		final Button buttonDL   = (Button) findViewById(R.id.buttonDownload);
+		final Button buttonNext = (Button) findViewById(R.id.buttonNext);
+		
+		buttonSetg.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View view) {
+				view.setBackgroundColor(Color.parseColor(STEEL_BLUE));
+				buttonMe.setBackgroundColor(Color.parseColor(BLACK));
+				buttonDL.setBackgroundColor(Color.parseColor(BLACK));
+				buttonNext.setBackgroundColor(Color.parseColor(BLACK));
+				
+				
+				Intent intent = new Intent(ChooseSubjectActivity.this, SettingsActivity.class);
+				ChooseSubjectActivity.this.startActivity(intent);
+				//TODO - Show history of the user
+			}
+		});
+	}
+	
+	private void handleMeButton() {
+		final Button buttonSetg = (Button) findViewById(R.id.buttonSettings);
+		final Button buttonMe   = (Button) findViewById(R.id.buttonMe);
+		final Button buttonDL   = (Button) findViewById(R.id.buttonDownload);
+		final Button buttonNext = (Button) findViewById(R.id.buttonNext);
 
 		buttonMe.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View view) {
 				view.setBackgroundColor(Color.parseColor(STEEL_BLUE));
-				buttonNext.setBackgroundColor(Color.parseColor(GRAY));
+				buttonSetg.setBackgroundColor(Color.parseColor(BLACK));
+				buttonDL.setBackgroundColor(Color.parseColor(BLACK));
+				buttonNext.setBackgroundColor(Color.parseColor(BLACK));
 				
 				Toast toast = Toast.makeText(view.getContext(), "Your Profile", 121);
 				toast.show();
-				//TODO - Show history of the user
+				
+				Intent intent = new Intent(ChooseSubjectActivity.this, ProfileActivity.class);
+				ChooseSubjectActivity.this.startActivity(intent);
+				
+				finish();
 			}
 		});
 	}
 	
 	private void handleDownloadButton() {
-		final Button buttonDownload = (Button) findViewById(R.id.buttonDownload);
-		
-		final Button buttonNext = (Button) findViewById(R.id.buttonNext);
+		final Button buttonSetg = (Button) findViewById(R.id.buttonSettings);
 		final Button buttonMe   = (Button) findViewById(R.id.buttonMe);
+		final Button buttonDL   = (Button) findViewById(R.id.buttonDownload);
+		final Button buttonNext = (Button) findViewById(R.id.buttonNext);
 
-		buttonDownload.setOnClickListener(new OnClickListener() {
+		buttonDL.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View view) {
 				view.setBackgroundColor(Color.parseColor(STEEL_BLUE));
-				buttonNext.setBackgroundColor(Color.parseColor(GRAY));
-				
+				buttonSetg.setBackgroundColor(Color.parseColor(BLACK));
+				buttonMe.setBackgroundColor(Color.parseColor(BLACK));
+				buttonNext.setBackgroundColor(Color.parseColor(BLACK));
 				
 				Intent intent = new Intent(ChooseSubjectActivity.this, DownloadActivity.class);
 				ChooseSubjectActivity.this.startActivity(intent);
@@ -137,15 +208,19 @@ public class ChooseSubjectActivity extends AbstractActivity {
 	
 	private void handleNextButton(final ListView listViewSubjects) {
 		
-		final Button buttonNext = (Button) findViewById(R.id.buttonNext);
+		final Button buttonSetg = (Button) findViewById(R.id.buttonSettings);
 		final Button buttonMe   = (Button) findViewById(R.id.buttonMe);
+		final Button buttonDL   = (Button) findViewById(R.id.buttonDownload);
+		final Button buttonNext = (Button) findViewById(R.id.buttonNext);
 
 		buttonNext.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View view) {
 				view.setBackgroundColor(Color.parseColor(STEEL_BLUE));
-				buttonMe.setBackgroundColor(Color.parseColor(GRAY));
+				buttonSetg.setBackgroundColor(Color.parseColor(BLACK));
+				buttonMe.setBackgroundColor(Color.parseColor(BLACK));
+				buttonDL.setBackgroundColor(Color.parseColor(BLACK));
 
 				IntentData data        = new IntentData();
 				SparseBooleanArray sba = null;
@@ -155,6 +230,11 @@ public class ChooseSubjectActivity extends AbstractActivity {
 
 				if (checkedItems != null && checkedItems.size() == 0) {
 					Toast toast = Toast.makeText(view.getContext(), "Please select subjects.", 121);
+					toast.show();
+					
+					return;
+				} else if (checkedItems != null && checkedItems.size() > 10) {
+					Toast toast = Toast.makeText(view.getContext(), "You can select maximum of 10 subjects.", 121);
 					toast.show();
 					
 					return;
@@ -193,7 +273,7 @@ public class ChooseSubjectActivity extends AbstractActivity {
 								    long arg3) {
 				
 				Button buttonNext = (Button) findViewById(R.id.buttonNext);
-				buttonNext.setBackgroundColor(Color.parseColor(GRAY));
+				buttonNext.setBackgroundColor(Color.parseColor(BLACK));
 
 				CheckedTextView view = ((CheckedTextView) arg1);
 				if (view.isChecked() && view.getText().equals("All") && !checkedItems.contains("All")) {
@@ -220,9 +300,9 @@ public class ChooseSubjectActivity extends AbstractActivity {
 					
 					listViewSubjects.setItemChecked(arg2, true);
 					
-					childAt.getText();
 					childAt.setChecked(true);
 					childAt.setSelected(true);
+					
 				} else {
 					checkedItems.remove(view.getText());
 					CheckedTextView childAt = (CheckedTextView) listViewSubjects.getItemAtPosition(arg2);
@@ -230,6 +310,15 @@ public class ChooseSubjectActivity extends AbstractActivity {
 					childAt.setSelected(false);
 					childAt.getText();
 					listViewSubjects.setItemChecked(arg2, false);
+					
+					if (!view.isChecked() && !view.getText().equals("All")) {
+						// Uncheck All
+						CheckedTextView all = (CheckedTextView) listViewSubjects.getItemAtPosition(0);
+						listViewSubjects.setItemChecked(0, false);
+						all.setChecked(false);
+						all.setSelected(false);
+						checkedItems.remove("All");
+					}
 				}
 			}
 		});

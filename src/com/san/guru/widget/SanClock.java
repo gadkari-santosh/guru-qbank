@@ -15,11 +15,13 @@ public class SanClock {
 
 	private Handler myHandler = new Handler();
 
-	private AtomicInteger seconds = new AtomicInteger();
+	private AtomicInteger seconds = new AtomicInteger(0);
 	
 	private Runnable myRunnable = null;
 	
 	private Timer myTimer = null;
+	
+	private boolean isCountDown = false;
 	
 	public SanClock(TextView textView) {
 		this.textView = textView;
@@ -29,6 +31,13 @@ public class SanClock {
 		// NOP
 	}
 	
+	public SanClock(int countDown,TextView textView) {
+		seconds = new AtomicInteger(countDown);
+		this.textView = textView;
+		
+		isCountDown = true;
+	}
+	
 	public void setTextView(TextView textView) {
 		this.textView = textView;
 	}
@@ -36,7 +45,12 @@ public class SanClock {
 	public void start() {
 		myRunnable = new Runnable() {
 			public void run() {
-				int secs = seconds.addAndGet(1);
+				int secs = 0;
+				
+				if (isCountDown)
+					secs = seconds.decrementAndGet();
+				else
+					secs = seconds.incrementAndGet();
 				
 			    String time = DateTimeUtils.getTimeString(secs);
 
@@ -55,6 +69,11 @@ public class SanClock {
 
 	private void UpdateGUI() {
 		myHandler.post(myRunnable);
+	}
+	
+	public void stopStart() {
+		stop();
+		start();
 	}
 
 	public void stop() {

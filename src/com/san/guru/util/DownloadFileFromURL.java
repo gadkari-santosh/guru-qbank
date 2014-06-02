@@ -11,14 +11,8 @@ import java.util.List;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.os.Environment;
 import android.util.Log;
 import android.widget.ListView;
-import android.widget.Toast;
-
-import com.san.guru.model.SubjectFile;
-import com.san.guru.model.Subjects;
-import com.san.guru.widget.MyCustomAdapter;
 
 /**
  * Background Async Task to download file
@@ -79,7 +73,7 @@ public class DownloadFileFromURL extends AsyncTask<String, String, String> {
 	            int lenghtOfFile = conection.getContentLength();
 	            
 	            // download the file
-	            InputStream input = new BufferedInputStream(url.openStream(), 8192);
+	            InputStream input = new BufferedInputStream(url.openStream());
 	            
 	            CharSequence destination = eachURL.subSequence(eachURL.lastIndexOf("/")+1, eachURL.length());
 	            
@@ -139,36 +133,5 @@ public class DownloadFileFromURL extends AsyncTask<String, String, String> {
         }
 
         callback.call(downloadedFiles);
-        
-//		try {
-//			str = FileUtil.convertStreamToString(pDialog.getContext().openFileInput(this.destination));
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//        
-//        List<SubjectFile> subjectFiles = new ArrayList<SubjectFile>();
-//        
-//		String[] subjectArray = str.split(",");
-//		for (String subject : subjectArray) {
-//			SubjectFile subjectFile = new SubjectFile();
-//			
-//			String title = subject.substring(0, subject.indexOf("("));
-//			String attributes = subject.substring(subject.indexOf("(")+1, subject.indexOf(")"));
-//			
-//			subjectFile.setTitle(title);
-//			
-//			if (attributes != null) {
-//				String[] attrs = attributes.split(":");
-//				subjectFile.setDescription(attrs[0]);
-//				subjectFile.setSize(attrs[1]);
-//				subjectFile.setFileName(attrs[2]);
-//			}
-//				
-//			subjectFiles.add(subjectFile);
-//		}
-//		
-//		MyCustomAdapter adapter = new MyCustomAdapter(ctx, subjectFiles);
-//		listView.setAdapter(adapter);
-//		adapter.notifyDataSetChanged();
     }
 }

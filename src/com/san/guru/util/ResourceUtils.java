@@ -1,6 +1,9 @@
 package com.san.guru.util;
 
+import com.san.guru.R;
+
 import android.content.Context;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
@@ -8,7 +11,22 @@ public class ResourceUtils {
 
 	public static String getString(Context ctx, int id) {
 		return ctx.getResources().getString(id);
-				
+	}
+	
+	public static int getColor(Context ctx, int id) {
+		return ctx.getResources().getColor(id);
+	}
+	
+	public static int getInt(Context ctx, int id) {
+		return Integer.parseInt( ctx.getResources().getString(id) );
+	}
+	
+	public static int getInt(Context ctx, int id, int defaultValue) {
+		try {
+		return Integer.parseInt( ctx.getResources().getString(id) );
+		} catch (Exception exp) {
+			return defaultValue;
+		}
 	}
 	
 	public static boolean isNetworkAvailable(Context ctx) {

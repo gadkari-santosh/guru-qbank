@@ -8,6 +8,8 @@ public interface AppConstants {
 	
 	String INTENT_RESULT = "INT_RESULT";
 	
+	String INTENT_RECORDS = "INT_RECORDS";
+	
 	String ASSET_SUBJECT = "subjects.xml";
 	
 	String DOWNLOADED_SUBJECT_FILE = "downloaded_subjects.xml";
@@ -17,6 +19,8 @@ public interface AppConstants {
 	String INTENT_NUM_QUESTION = "NumQuestions";
 	
 	String INTENT_TEST_TYPE = "TestType";
+	
+	int DEFAULT_QUESTION_SET_SIZE = 20;
 	
 	String INTENT_TEST_LEVEL = "TestLevel";
 	
@@ -43,6 +47,8 @@ public interface AppConstants {
 	String SM_TITLE = "SM_TITLE";
 	
 	String SM_CAPTION = "SM_CAPTION";
+	
+	String SM_DESC = "SM_DESC";
 	
 	String ATTEMPTED_FILE_FORMAT = "%s_attempt.json";
 }

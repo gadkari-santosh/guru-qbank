@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Subjects>
     <Subject id="1" name="Xml" file="test.json" />
-    <Subject id="2" name="Core Java" file="test.json" />
+    <Subject id="2" name="Core Java" file="CoreJava.json" />
     <Subject id="3" name="Spring" file="test.json" />
     <Subject id="4" name="Hibernate" file="test.json" />
     <Subject id="5" name="Servlet" file="test.json" />

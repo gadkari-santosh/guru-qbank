@@ -58,22 +58,22 @@ public class LinkedInHandler implements ISocialMediaHandler {
 					Log.i("LinkedinSample", "ln_access_token: " + accessToken.getTokenSecret());
 					
 					Person profile = client.getProfileForCurrentUser(EnumSet.of(ProfileField.FIRST_NAME, ProfileField.LAST_NAME, ProfileField.HEADLINE));
-					toast = Toast.makeText(activity, "Logged In. Welcome " +profile.getFirstName(), 190);
+					toast = Toast.makeText(activity, "Logged In. Welcome " +profile.getFirstName(), 100);
 					toast.show();
 					
 					client.postShare(bundle.getString(LINKEDIN_POST), 
 							bundle.getString(SM_TITLE),
-							ResourceUtils.getString(activity, R.string.fb_desc), 
-							bundle.getString(SM_CAPTION),
+							bundle.getString(SM_DESC), 
+							bundle.getString(SM_DESC),
 							ResourceUtils.getString(activity, R.string.ln_link), 
 							VisibilityType.ANYONE);
 					
-					toast = Toast.makeText(activity, profile.getFirstName() + ", Your score Posted.", 190);
+					toast = Toast.makeText(activity, profile.getFirstName() + ", Your score Posted.", 100);
 					toast.show();
 				}
-				catch (Exception e) 
+				catch (Throwable e) 
 				{
-					Toast.makeText(activity.getApplicationContext(), "Err#Unable to open LinkedIn.", 100).show();
+					Toast.makeText(activity.getApplicationContext(), "Err#Unable to open LinkedIn.", 300).show();
 					Log.i("LinkedinSample", "error to get verifier" + e);
 					e.printStackTrace();
 				}

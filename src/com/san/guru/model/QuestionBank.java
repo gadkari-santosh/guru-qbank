@@ -168,7 +168,7 @@ public class QuestionBank {
 				if (unattempedIds.hasNext()) {
 					int id = unattempedIds.next();
 					if (questions.size() > id) {
-						Question question = questions.get(id);
+						Question question = questions.get(id-1);
 						question.setSubject(subject);
 						
 						unAttemptedQuestions.add(question); 
@@ -228,7 +228,7 @@ public class QuestionBank {
         BufferedReader r = new BufferedReader(new InputStreamReader(reader));
         
         for(String line; (line = r.readLine()) != null; ) {
-            b.append(line).append("\n");
+            b.append(line);
         }
 
         Type listOfTestObject = new TypeToken<List<Question>>(){}.getType();
@@ -242,11 +242,10 @@ public class QuestionBank {
 		count++;
 		
 		Question question = null;
-		if (listOfQuestions.size() == count)
+		if (listOfQuestions.size() == count || count >= listOfQuestions.size())
 			return null;
 		
 		question = listOfQuestions.get(count);
-		//question.setId(count+1);
 		
 		return question;
 	}

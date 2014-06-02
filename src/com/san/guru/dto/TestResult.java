@@ -3,7 +3,10 @@ package com.san.guru.dto;
 import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.Date;
 import java.util.List;
+
+import com.san.guru.constant.TEST_TYPE;
 
 public class TestResult implements Serializable {
 
@@ -15,7 +18,37 @@ public class TestResult implements Serializable {
 	private int totalTimeinSeconds = 0;
 	private int pace 			   = 0;
 	
+	private Date date = null;
+	
 	private List<SubjectResult> subjectResult = null;
+	
+	private int id = 0;
+	
+	private TEST_TYPE testType = TEST_TYPE.Practice;
+	
+	public TEST_TYPE getTestType() {
+		return testType;
+	}
+
+	public void setTestType(TEST_TYPE testType) {
+		this.testType = testType;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
+	}
 
 	public int getPace() {
 		return pace;

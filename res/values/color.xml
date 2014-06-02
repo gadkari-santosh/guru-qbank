@@ -114,7 +114,8 @@
  <color name="Indigo">#4B0082</color>
  <color name="MediumTurquoise">#48D1CC</color>
  <color name="DarkSlateBlue">#483D8B</color>
- <color name="SteelBlue">#4682B4</color>
+ <!-- <color name="SteelBlue">#4682B4</color>  -->
+ <color name="SteelBlue">#1F4E79</color>
  <color name="RoyalBlue">#4169E1</color>
  <color name="Turquoise">#40E0D0</color>
  <color name="MediumSeaGreen">#3CB371</color>
@@ -140,6 +141,7 @@
  <color name="MediumBlue">#0000CD</color>
  <color name="DarkBlue">#00008B</color>
  <color name="Navy">#000080</color>
- <color name="Black">#575656</color>
+ <color name="Black">#000000</color>
  <color name="DarkBlack">#000000</color>
+ <color name="AppColor">#203864</color>
 </resources>

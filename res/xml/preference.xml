@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@color/White" >
+
+    <PreferenceCategory
+        android:key="about"
+        android:summary="About us"
+        android:title="About" >
+        
+        <EditTextPreference
+            android:name="EditText Preference"
+            android:defaultValue="Nothing"
+            android:key="Message"
+             android:enabled="false"
+            android:summary="Developed by Santosh Gadkari (gadkari.santosh@gmail.com)"
+            android:title="Exam version 1.0.0" />
+        
+    </PreferenceCategory>
+    
+    <PreferenceCategory
+        android:key="storage"
+        android:summary="Deletes all question bank file."
+        android:title="Storage" >
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="deleteAllData"
+            android:summary="Deletes all downloaded subject data from the phone"
+            android:title="Delete all Data" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:key="appStorage"
+        android:summary="Deletes question bank file."
+        android:title="Subject Storage" >
+    </PreferenceCategory>
+
+</PreferenceScreen>

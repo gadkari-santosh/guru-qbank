@@ -1,6 +1,8 @@
 package com.san.guru.dto;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Question {
 
@@ -13,10 +15,9 @@ public class Question {
 	
 	private List<Option> options = null;
 	
-	private int answer = 0;
+	private Set<Integer> answer = new HashSet<Integer>();
 	
-	private String userAnswer = null;
-
+	private Set<Integer> userAnswer = new HashSet<Integer>();
 	
 	public String getSubject() {
 		return subject;
@@ -66,36 +67,46 @@ public class Question {
 		this.options = options;
 	}
 
-	public int getAnswer() {
+	public Set<Integer> getAnswers() {
 		return answer;
 	}
 
 	public void setAnswer(int answer) {
-		this.answer = answer;
+		this.answer.add(answer);
 	}
 
-	public String getUserAnswer() {
+	public Set<Integer> getUserAnswers() {
 		return userAnswer;
 	}
 
-	public void setUserAnswer(String userAnswer) {
-		this.userAnswer = userAnswer;
+	public void setUserAnswer(int userAnswer) {
+		this.userAnswer.add(userAnswer);
+	}
+	
+	public void cancelUserAnswer(int userAnswer) {
+		this.userAnswer.remove(userAnswer);
+	}
+	
+	public void clearUserAnswer() {
+		this.userAnswer.clear();
 	}
 	
 	public boolean isCorrect() {
-		for (Option option : getOptions()) {
-			if (option.getText().equalsIgnoreCase(userAnswer)
-				&& option.getId() == answer) {
-				
-				return true;
-			}
-		}
-		
+		if (getAnswers().size() == getUserAnswers().size()
+			&& getUserAnswers().containsAll(getAnswers()))
+			return true;
 		return false;
 	}
 	
 	public boolean isAttempted() {
-		if (userAnswer != null && !"".equals(userAnswer.trim()))
+		if (userAnswer.size() > 0)
+			return true;
+		
+		return false;
+	}
+	
+	public boolean isMultipleChoice() {
+		if (answer.size() > 1 )
 			return true;
 		
 		return false;

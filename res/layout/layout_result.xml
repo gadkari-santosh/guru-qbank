@@ -1,14 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.GridLayout xmlns:app="http://schemas.android.com/apk/res/com.san.guru"
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/WhiteSmoke"
     android:textColor="@color/Black"
     app:columnCount="2" >
 
     <android.support.v7.widget.GridLayout
         android:id="@+id/grid_1"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        app:layout_column="0"
+        app:layout_gravity="left|top"
+        app:layout_row="0"
+        android:background="@color/SteelBlue"
+        app:columnCount="1" >
+
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/adView"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            ads:adSize="SMART_BANNER"
+            ads:adUnitId="a153529fa16bd15"
+            android:background="@color/SteelBlue" />
+    </android.support.v7.widget.GridLayout>
+
+    <android.support.v7.widget.GridLayout
+        android:id="@+id/grid_2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_column="0"
@@ -19,86 +40,110 @@
         app:columnCount="1"
         android:color="@color/Black" >
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" >
-
-            <TextView
-                android:id="@+id/txtVwScore"
-                android:layout_width="50dp"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
-                android:layout_margin="20dp"
-                android:background="@drawable/edges"
-                android:gravity="center"
-                android:padding="5dp"
-                android:text="test"
-                android:textColor="@color/WhiteSmoke"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/txtVwPace"
-                android:layout_width="50dp"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentTop="true"
-                android:layout_margin="20dp"
-                android:background="@drawable/edges"
-                android:gravity="center"
-                android:padding="5dp"
-                android:text="Pace \n\n 5 q/m"
-                android:textColor="@color/WhiteSmoke"
-                android:textStyle="bold" />
-        </LinearLayout>
-     <ScrollView
-                android:id="@+id/qScrollView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:scrollbarStyle="outsideOverlay"
-                android:scrollbars="horizontal|vertical" >
-       
-        <TableLayout
-            android:id="@+id/subjectTable"
+        <ScrollView
+            android:id="@+id/ScrollView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            app:layout_column="0"
-            app:layout_gravity="left|fill_vertical"
-            app:layout_row="1" >
-        </TableLayout>
-</ScrollView>
-        <LinearLayout
-            android:id="@+id/smLinearLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/WhiteSmoke"
-            android:gravity="bottom|bottom" >
+            android:scrollbarStyle="outsideOverlay"
+            android:scrollbars="horizontal|vertical" >
 
-            <ImageButton
-                android:id="@+id/imgBFacebook"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                app:layout_column="0"
-                app:layout_row="1"
-                android:background="@color/WhiteSmoke"
-                android:src="@drawable/ic_facebook" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical" >
 
-            <ImageButton
-                android:id="@+id/imgBLinkedIn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                app:layout_column="0"
-                app:layout_row="1"
-                android:background="@color/WhiteSmoke"
-                android:src="@drawable/ic_linkedin" />
-        </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/resultLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" >
+
+                    <TextView
+                        android:id="@+id/txtVwScore"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_margin="20dp"
+                        android:background="@drawable/edges"
+                        android:gravity="center"
+                        android:padding="5dp"
+                        android:text="test"
+                        android:textColor="@color/AppColor"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/txtVwPace"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_margin="20dp"
+                        android:background="@drawable/edges"
+                        android:gravity="center"
+                        android:padding="5dp"
+                        android:text="Pace \n\n 5 q/m"
+                        android:textColor="@color/AppColor"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical" >
+
+                    <ScrollView
+                        android:id="@+id/qScrollView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:scrollbarStyle="outsideOverlay"
+                        android:scrollbars="horizontal|vertical" >
+
+                        <TableLayout
+                            android:id="@+id/subjectTable"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            app:layout_column="0"
+                            app:layout_gravity="left|fill_vertical"
+                            app:layout_row="1" >
+                        </TableLayout>
+                    </ScrollView>
+
+                    <LinearLayout
+                        android:id="@+id/smLinearLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/White"
+                        android:gravity="bottom|bottom"
+                        android:orientation="horizontal" >
+
+                        <ImageButton
+                            android:id="@+id/imgBFacebook"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            app:layout_column="0"
+                            app:layout_row="1"
+                            android:background="@color/White"
+                            android:src="@drawable/ic_facebook" />
+
+                        <ImageButton
+                            android:id="@+id/imgBLinkedIn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            app:layout_column="0"
+                            app:layout_row="1"
+                            android:background="@color/White"
+                            android:src="@drawable/ic_linkedin" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
     </android.support.v7.widget.GridLayout>
 
     <android.support.v7.widget.GridLayout
-        android:id="@+id/grid_2"
+        android:id="@+id/grid_3"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         app:layout_column="0"
@@ -108,13 +153,13 @@
         app:columnCount="1" >
 
         <Button
-            android:id="@+id/butQuitTest"
+            android:id="@+id/butSaveTest"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_gravity="left|top"
+            app:layout_gravity="center|top"
             android:background="@color/Black"
-            android:drawableTop="@drawable/button_end_test"
-            android:text="QUIT"
+            android:drawableTop="@drawable/ic_action_save"
+            android:text="SAVE RESULT"
             android:textColor="@color/button_color"
             android:textSize="10sp"
             android:textStyle="bold" />
@@ -124,10 +169,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_column="0"
-            app:layout_gravity="center|top"
+            app:layout_gravity="left|top"
             app:layout_row="0"
             android:background="@color/Black"
-            android:drawableTop="@drawable/button_email"
+            android:drawableTop="@drawable/ic_action_email"
             android:text="FEEDBACK"
             android:textColor="@color/button_color"
             android:textSize="10sp"
@@ -141,7 +186,7 @@
             app:layout_gravity="right|top"
             app:layout_row="0"
             android:background="@color/Black"
-            android:drawableTop="@drawable/button_review"
+            android:drawableTop="@drawable/ic_action_repeat_active"
             android:text="REVIEW"
             android:textColor="@color/button_color"
             android:textSize="10sp"

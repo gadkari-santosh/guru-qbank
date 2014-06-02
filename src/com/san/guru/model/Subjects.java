@@ -5,7 +5,9 @@ import static com.san.guru.constant.AppConstants.DOWNLOADED_SUBJECT_FILE;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +31,8 @@ import com.san.guru.util.FileUtil;
 public class Subjects {
 
 	private Map<String, Subject> subjectMap = new LinkedHashMap<String, Subject>();
+	
+	private List<String> downloadedSubjects = new ArrayList<String>();
 	
 	private static final Subjects INSTANCE = new Subjects();
 	
@@ -65,33 +69,15 @@ public class Subjects {
 					}
 						
 					subjectMap.put(title, subjectFile);
+					downloadedSubjects.add(title);
 				}
 			}
-			
-			
-//			XPath xpath = XPathFactory.newInstance().newXPath();
-//			String expression = "//Subject";
-//			NodeList nodes = null;
-//			
-//			nodes = (NodeList) xpath.evaluate(expression, new InputSource(inputStream), XPathConstants.NODESET);
-//			
-//			for (int i=0; i<nodes.getLength(); i++) {
-//				node = nodes.item(i);
-//				
-//				subject = new Subject();
-//				
-//				subject.setName(  xpath.evaluate("@name", node) );
-//				subject.setQuestionSetFile(  xpath.evaluate("@file", node) );
-//				
-//				subjectMap.put(subject.getName(), subject);
-//			}
-			
-			
 		} catch (Exception e) {
 			Log.e("error", e.toString());
 		}
 	}
 	
+	@SuppressLint("NewApi")
 	private void loadXml(InputStream inputStream) {
 		Node node = null;
 		
@@ -124,18 +110,23 @@ public class Subjects {
 	}
 	
 	@SuppressLint("NewApi")
-	public List getSubjects() {
+	public List getSubjectNames() {
 		Object[] objArray = subjectMap.keySet().toArray();
 		
 		return Arrays.asList(objArray);
 	}
 	
-	public void addDownloaded(Context ctx, SubjectFile subjectFile) {
-		Subject subject = new Subject();
-		subject.setFileSource(FILE_SOURCE.LOCAL_STORAGE);
-		subject.setQuestionSetFile(subjectFile.getFileName());
-		subject.setName(subjectFile.getTitle());
-		
-		subjectMap.put(subject.getName(), subject);
+	public Collection<Subject> getSubjects() {
+		return subjectMap.values();
+	}
+	
+	public void removeSubject(String subject) {
+		subjectMap.remove(subject);
+	}
+	
+	public void removeAllDownloadedSubjects() {
+		for (String  subject : downloadedSubjects) {
+			subjectMap.remove(subject);
+		}
 	}
 }

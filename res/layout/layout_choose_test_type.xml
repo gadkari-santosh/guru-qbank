@@ -1,53 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-  Copyright (C) 2014 - 2025
- 
-  This software is copyrighted. The software may not be copied, reproduced, 
-  translated or reduced to any electronic medium or machine-readable form without 
-  the prior written consent of "Santosh Gadkari", except that you may make one copy 
-  of the program disks solely for back-up purposes.
-  
-  I have worked very hard to create a quality product and wish to realize 
-  the fair fruits of our labor. We therefore insist that you honor our copyright.
-  However,we want to encourage the use of our product in all possible circumstances and 
-  will work very hard to meet your needs.
-  
-  
--->
-
 <android.support.v7.widget.GridLayout xmlns:app="http://schemas.android.com/apk/res/com.san.guru"
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/WhiteSmoke"
+    android:background="@color/White"
     android:textColor="@color/Black"
-    app:columnCount="3" >
+    app:columnCount="2" >
 
     <android.support.v7.widget.GridLayout
         android:id="@+id/grid_1"
         android:layout_width="match_parent"
-        android:layout_height="42dp"
-        app:layout_column="0"
-        app:layout_gravity="left|top"
-        app:layout_row="0"
-        android:background="@color/SteelBlue"
-        app:columnCount="1" >
-
-        <TextView
-            android:id="@+id/txtTestType"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="10dp"
-            app:layout_column="0"
-            app:layout_gravity="left|center_vertical"
-            app:layout_row="0"
-            android:text="@string/choose_text_type"
-            android:textColor="@color/WhiteSmoke" />
-    </android.support.v7.widget.GridLayout>
-
-    <android.support.v7.widget.GridLayout
-        android:id="@+id/grid_2"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_column="0"
         app:layout_gravity="center"
@@ -55,86 +18,187 @@
         app:columnCount="2"
         android:color="@color/Black" >
 
-        <LinearLayout
+        <ScrollView
+            android:id="@+id/qScrollView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            app:layout_column="0"
-            app:layout_gravity="left|top"
-            app:layout_row="1"
-            android:orientation="vertical" >
+            android:scrollbarStyle="outsideOverlay"
+            android:scrollbars="horizontal|vertical" >
 
-             <RadioGroup
-                 android:id="@+id/radioGroup1"
-                 android:layout_width="match_parent"
-                 android:layout_height="wrap_content" >
-
-                <RadioButton
-                    android:id="@+id/radio0"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checked="true"
-                    android:text="Practice Test" />
-
-                <RadioButton
-                    android:id="@+id/radio1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Timed Test" />
-
-                <RadioButton
-                    android:id="@+id/radio2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Rapid Fire" />
-            </RadioGroup>
-            
             <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="75dp"
-                android:layout_margin="5dp"
-                app:layout_column="0"
-                app:layout_gravity="center|center"
-                app:layout_row="1"
-                android:orientation="horizontal" >
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
 
                 <TextView
-                    android:id="@+id/textNumQuestion"
+                    android:id="@+id/marquee_text"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_margin="5dp"
-                    app:layout_column="0"
-                    app:layout_row="0"
-                    android:text="Number of Questions "
-                    android:textColor="#000" />
-
-                <NumberPicker
-                    android:id="@+id/numberPicker1"
-                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerInParent="true" />
+                    android:background="#AEB404"
+                    android:cursorVisible="false"
+                    android:ellipsize="marquee"
+                    android:fadingEdge="horizontal"
+                    android:focusableInTouchMode="true"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:scrollHorizontally="true"
+                    android:scrollbars="horizontal"
+                    android:singleLine="true"
+                    android:textColor="#ffffff" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:layout_marginBottom="10dp"
+                    app:layout_column="0"
+                    app:layout_gravity="left|top"
+                    app:layout_row="1"
+                    android:orientation="vertical" >
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal" >
+
+                        <ImageView
+                            android:id="@+id/imageView1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/question_type" />
+
+                        <TextView
+                            android:id="@+id/textNumQuestion"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_margin="5dp"
+                            app:layout_column="0"
+                            app:layout_row="0"
+                            android:text="  Exam"
+                            android:textColor="#000" />
+                    </LinearLayout>
+
+                    <RadioGroup
+                        android:id="@+id/radioGroupExamType"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="15dp"
+                        android:background="@drawable/rounded_corner" >
+
+                        <RadioButton
+                            android:id="@+id/radio0"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checked="true"
+                            android:onClick="setTestType"
+                            android:text="Practice" />
+
+                        <RadioButton
+                            android:id="@+id/radio1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:onClick="setTestType"
+                            android:text="Timed" />
+
+                        <RadioButton
+                            android:id="@+id/radio2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:onClick="setTestType"
+                            android:text="Rapid Fire" />
+                    </RadioGroup>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal" >
+
+                        <ImageView
+                            android:id="@+id/imageView1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/questons" />
+
+                        <TextView
+                            android:id="@+id/textNumQuestion"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            app:layout_column="0"
+                            app:layout_row="0"
+                            android:text="  Questions"
+                            android:textColor="#000" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal" >
+
+                        <RadioGroup
+                            android:id="@+id/radioGroup1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="15dp"
+                            android:background="@drawable/rounded_corner"
+                            android:orientation="horizontal" >
+
+                            <RadioButton
+                                android:id="@+id/radio0"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:checked="true"
+                                android:onClick="setNumberOfQuestions"
+                                android:text="20" />
+
+                            <RadioButton
+                                android:id="@+id/radio1"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:onClick="setNumberOfQuestions"
+                                android:text="25" />
+
+                            <RadioButton
+                                android:id="@+id/radio2"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:onClick="setNumberOfQuestions"
+                                android:text="30" />
+                        </RadioGroup>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:background="@drawable/rounded_corner"
+                        android:orientation="horizontal" >
+
+                        <ImageView
+                            android:id="@+id/imageView2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:src="@drawable/bulb" />
+
+                        <TextView
+                            android:id="@+id/txtViewHelp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:layout_column="0"
+                            app:layout_row="0"
+                            android:text=""
+                            android:textColor="#000" />
+                    </LinearLayout>
+                </LinearLayout>
             </LinearLayout>
-
-            <CheckBox
-                android:id="@+id/chkBoxNegMarking"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:text="Negative Marking" />
-
-            <CheckBox
-                android:id="@+id/chkBoxEqualWeight"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:text="Equal Weightage to all subjects" />
-
-           
-        </LinearLayout>
+        </ScrollView>
     </android.support.v7.widget.GridLayout>
 
     <android.support.v7.widget.GridLayout
-        android:id="@+id/grid_3"
+        android:id="@+id/grid_2"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         app:layout_column="0"
@@ -149,7 +213,7 @@
             android:layout_height="wrap_content"
             app:layout_gravity="right|top"
             android:background="@color/Black"
-            android:drawableTop="@drawable/button_next_question"
+            android:drawableTop="@drawable/ic_action_next_active"
             android:text="START"
             android:textColor="@color/button_color"
             android:textSize="10sp"
@@ -163,7 +227,7 @@
             app:layout_gravity="left|top"
             app:layout_row="0"
             android:background="@color/Black"
-            android:drawableTop="@drawable/button_prev_question"
+            android:drawableTop="@drawable/ic_action_previous_active"
             android:text="BACK"
             android:textColor="@color/button_color"
             android:textSize="10sp"

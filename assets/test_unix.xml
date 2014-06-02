@@ -382,4 +382,236 @@ bin -usr/bin and /bin
 </Explaination>
 		<Answer>1</Answer>
 	</Test>
+	</Test>
+		<Test id="30">
+		<Question>How to print last line of the file "file.txt"?</Question>
+		<Options>
+			<Option id="1">head -1 file.txt</Option>
+			<Option id="2">sed '2,$d' file.txt</Option>
+			<Option id="3">tail -1 file.txt</Option>
+			<Option id="4">sed -n '$ p' file.txt</Option>
+			<Option id="5">option 3 & 4</Option>			
+		</Options>
+		<Explaination>Wrong:Correct answer is option 5.
+		In "sed" command, $ stands for the last line and p stands for print output in standard o/p screen. '-n' switch takes [sed] to silent mode so that [sed] does not print anything else in the output. 
+</Explaination>
+		<Answer>5</Answer>
+	</Test>
+		<Test id="31">
+		<Question>How to print first line of the file "file.txt"?</Question>
+		<Options>
+			<Option id="1">head -1 file.txt</Option>
+			<Option id="2">sed '2,$d' file.txt</Option>
+			<Option id="3">tail -1 file.txt</Option>
+			<Option id="4">sed -n '$ p' file.txt</Option>
+			<Option id="5">option 1 & 2</Option>			
+		</Options>
+		<Explaination>Wrong:Correct answer is option 5.
+		 The 'd' parameter basically tells [sed] to delete all the records from display output from line no. 2 to last line of the file (last line is represented by $ symbol). It does not actually delete those lines from the file, it just does not display those lines in standard output screen. So you only see the remaining line which is the first line.
+</Explaination>
+		<Answer>5</Answer>
+	</Test>	
+		<Test id="32">
+		<Question>Which of the following command sends wordcount from file "file1" to the new file "newfile".</Question>
+		<Options>
+			<Option id="1">wc file1 > newfile</Option>
+			<Option id="2">wc newfile</Option>
+			<Option id="3">wc file1 - newfile</Option>
+			<Option id="4">wc file1| newfile</Option>
+		</Options>
+		<Explaination>Wrong:Correct answer is option 1.
+</Explaination>
+		<Answer>1</Answer>
+	</Test>
+		<Test id="33">
+		<Question>Which command is used to extract specific columns from the file?</Question>
+		<Options>
+			<Option id="1">cat</Option>
+			<Option id="2">cut</Option>
+			<Option id="3">grep</Option>
+			<Option id="4">paste</Option>
+		</Options>
+		<Explaination>Wrong:Correct answer is option 2.
+        </Explaination>
+		<Answer>2</Answer>
+	</Test>
+		<Test id="34">
+		<Question>The Octal number to be given along with chmod command to make a file readable, writable and executable to the owner, readable and executable to group and readable to others is: </Question>
+		<Options>
+			<Option id="1">744</Option>
+			<Option id="2">777</Option>
+			<Option id="3">754</Option>
+			<Option id="4">755</Option>
+		</Options>
+		<Explaination>Wrong:Correct answer is option 3.
+		Octal numbers for read , write and execute permissions are -
+		read 4
+		write 2
+		execute 1. So for read and execute permission octal number will be (4+1) 5. 
+        </Explaination>
+		<Answer>3</Answer>
+	</Test>
+		<Test id="35">
+		<Question>Which command is used to sort the lines of data in a file in reverse order </Question>
+		<Options>
+			<Option id="1">sh</Option>
+			<Option id="2">sort</Option>
+			<Option id="3">sort -r</Option>
+			<Option id="4">st</Option>
+		</Options>
+		<Explaination>Wrong:Correct answer is option 3.
+        </Explaination>
+		<Answer>3</Answer>
+	</Test>
+		<Test id="36">
+		<Question>Some of the key features of Awk are : </Question>
+		<Options>
+			<Option id="1">Awk views a text file as records and fields</Option>
+			<Option id="2">Like common programming language, Awk has variables, conditionals and loops</Option>
+			<Option id="3">Awk has arithmetic and string operators.</Option>
+			<Option id="4">Awk can generate formatted reports</Option>
+			<Option id="5">All of the above</Option>			
+		</Options>
+		<Explaination>Wrong:Correct answer is option 5.
+        </Explaination>
+		<Answer>5</Answer>
+	</Test>
+		<Test id="37">
+		<Question>Some of the key features of Awk are : </Question>
+		<Options checkbox="true">
+			<Option id="1">Awk views a text file as records and fields</Option>
+			<Option id="2">Like common programming language, Awk has variables, conditionals and loops</Option>
+			<Option id="3">Awk has arithmetic and string operators.</Option>
+			<Option id="4">Awk can generate formatted reports</Option>
+			<Option id="5">All of the above</Option>			
+		</Options>
+		<Explaination>Wrong:Correct answer is option 5.
+        </Explaination>
+		<Answer>5</Answer>
+	</Test>
+		<Test id="38">
+		<Question>What will be the output of below command :
+         echo "Unix" | rev	</Question>
+		<Options>
+			<Option id="1">Unix</Option>
+			<Option id="2">xinU</Option>
+			<Option id="3">xinu</Option>
+			<Option id="4">None of the above</Option>
+		</Options>
+		<Explaination>Wrong:Correct answer is option 2. "rev" command will reverse the string.
+        </Explaination>
+		<Answer>2</Answer>
+	</Test>
+		<Test id="39">
+		<Question>which option will be used to show all hidden files from directory using ls command </Question>
+		<Options>
+			<Option id="1">-l</Option>
+			<Option id="2">-1</Option>
+			<Option id="3">-a</Option>
+			<Option id="4">-h</Option>
+		</Options>
+		<Explaination>Wrong:Correct answer is option 3.
+        </Explaination>
+		<Answer>3</Answer>
+	</Test>
+		<Test id="40">
+		<Question>which option will be used to show single entry per line using ls command </Question>
+		<Options>
+			<Option id="1">-l</Option>
+			<Option id="2">-1</Option>
+			<Option id="3">-a</Option>
+			<Option id="4">-h</Option>
+		</Options>
+		<Explaination>Wrong:Correct answer is option 2.
+        </Explaination>
+		<Answer>2</Answer>
+	</Test>
+		<Test id="41">
+		<Question>What will be the output of below command
+          ln -s /var/docs/X/readme	</Question>
+		<Options>
+			<Option id="1">syntax error</Option>
+			<Option id="2">It will create a file called readme in the current directory which is symbolic link to /var/docs/X/readme</Option>
+			<Option id="3">It will create a file called readme in the home directory which is symbolic link to /var/docs/X/readme</Option>
+			<Option id="4">None of the above</Option>
+		</Options>
+		<Explaination>Wrong:Correct answer is option 2.
+        </Explaination>
+		<Answer>2</Answer>
+	</Test>	
+		<Test id="42">
+		<Question>What will be the output of below command
+          chown mery email_msg	</Question>
+		<Options>
+			<Option id="1">syntax error</Option>
+			<Option id="2">It will change email_msg file so that it belongs to the group mery</Option>
+			<Option id="3">It will make mery the new owner of the file email_msg</Option>
+			<Option id="4">None of the above</Option>
+		</Options>
+		<Explaination>Wrong:Correct answer is option 3.
+        </Explaination>
+		<Answer>3</Answer>
+	</Test>
+		<Test id="43">
+		<Question>Which of the following command can be used to display one screen at a time from file "file1" and prompts you for a command after each screen	</Question>
+		<Optionons checkbox="true">
+			<Option id="1">more file1</Option>
+			<Option id="2">pg file1</Option>
+			<Option id="3">cat file1 | less</Option>
+			<Option id="4">All of the above</Option>
+		</Options>
+		<Explaination>Wrong:Correct answer is option 4.
+        </Explaination>
+		<Answer>4</Answer>
+	</Test>
+		<Test id="44">
+		<Question>Which of the following command is used to list all tcp ports using "netstat".</Question>
+		<Options>
+			<Option id="1">netstat -a</Option>
+			<Option id="2">netstat -at</Option>
+			<Option id="3">netstat -au</Option>
+			<Option id="4">netstat -l</Option>
+		</Options>
+		<Explaination>Wrong:Correct answer is option 2.
+        </Explaination>
+		<Answer>2</Answer>
+	</Test>
+		<Test id="45">
+		<Question>What will be the output of below command.
+		netstat -l </Question>
+		<Options>
+			<Option id="1">List all ports</Option>
+			<Option id="2">List all tcp ports</Option>
+			<Option id="3">List only listening ports</Option>
+			<Option id="4">List only listening tcp ports</Option>
+		</Options>
+		<Explaination>Wrong:Correct answer is option 3.
+        </Explaination>
+		<Answer>3</Answer>
+	</Test>
+		<Test id="46">
+		<Question>Which are the following different ways to repeat last executed command. </Question>
+		<Options checkbox="true">
+			<Option id="1">Use the up arrow to view the previous command and press enter to execute it.</Option>
+			<Option id="2">Type !! and press enter from the command line</Option>
+			<Option id="3">Type !-1 and press enter from the command line.</Option>
+			<Option id="4">Press Control+P will display the previous command, press enter to execute it</Option>
+			<Option id="5">All of the above</Option>			
+		</Options>
+		<Explaination>Wrong:Correct answer is option 5.
+        </Explaination>
+		<Answer>5</Answer>
+	</Test>
+		<Test id="47">
+		<Question>which option will be used to display all file systems and disk usage in human readable format</Question>
+		<Options>
+			<Option id="1">df</Option>
+			<Option id="2">df -h</Option>
+			<Option id="3">df -m</Option>
+			<Option id="4">df -k</Option>
+		</Options>
+		<Explaination>Wrong:Correct answer is option 2.
+        </Explaination>
+		<Answer>2</Answer>
+	</Test>
 </Tests>

@@ -80,20 +80,6 @@ public class MyCustomAdapter extends BaseAdapter {
      * cache all the things inside once it's created.
      */
     private static class ViewHolder {
- 
         protected TextView itemName;
- 
     }
-    
-//    public void filterData(String query){
-//		   
-//		  query = query.toLowerCase();
-//		  
-//		  mListItems.add("santosh");
-//		  mListItems.add("santosh1");
-//		  mListItems.remove(1);
-//		 
-//		  notifyDataSetChanged();
-//		   
-//		 }
 }
